@@ -19,7 +19,7 @@ module GEOS_TurbulencePertGridCompMod
 
   use BLDRIVER
 
-  use fv_timing_mod,  only: timing_on, timing_off
+  use fv_timing_nlm_mod,  only: timing_on, timing_off
 
   implicit none
   private

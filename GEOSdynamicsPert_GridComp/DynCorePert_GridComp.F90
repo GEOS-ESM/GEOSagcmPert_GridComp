@@ -26,22 +26,22 @@
    use mpp_domains_mod,      only: mpp_update_domains, DGRID_NE, mpp_get_boundary, mpp_get_boundary_ad
 
 ! fv_core uses
-   use fv_mp_mod,            only: is_master
-   use fv_control_mod,       only: fv_init1, fv_init2
-   use fv_control_nlm_mod,   only: fv_init_pert, fv_end_pert
-   use fv_arrays_mod ,       only: FVPRC
-   use fv_arrays_mod ,       only: fv_atmos_type
-   use fv_arrays_nlm_mod ,   only: fv_atmos_pert_type, fv_timing_onoff
-   use fv_dynamics_mod,      only: fv_dynamics
+   use fv_mp_nlm_mod,            only: is_master
+   use fv_control_nlm_mod,       only: fv_init1, fv_init2
+   use fv_control_tlmadm_mod,   only: fv_init_pert, fv_end_pert
+   use fv_arrays_nlm_mod ,       only: FVPRC
+   use fv_arrays_nlm_mod ,       only: fv_atmos_type
+   use fv_arrays_tlmadm_mod ,   only: fv_atmos_pert_type, fv_timing_onoff
+   use fv_dynamics_nlm_mod,      only: fv_dynamics
    use fv_dynamics_tlm_mod,  only: fv_dynamics_nlm => fv_dynamics
    use fv_dynamics_tlm_mod,  only: fv_dynamics_tlm
    use fv_dynamics_adm_mod,  only: fv_dynamics_fwd, fv_dynamics_bwd
-   use fv_diagnostics_mod,   only: prt_minmax
-   use fv_timing_mod,        only: timing_on, timing_off
+   use fv_diagnostics_nlm_mod,   only: prt_minmax
+   use fv_timing_nlm_mod,        only: timing_on, timing_off
    use fv_sg_tlm_mod,        only: fv_subgrid_z_tlm
    use fv_sg_adm_mod,        only: fv_subgrid_z_fwd, fv_subgrid_z_bwd
-   use fv_pressures_tlm_mod, only: compute_pressures_tlm
-   use fv_pressures_adm_mod, only: compute_pressures_fwd, compute_pressures_bwd
+   use fv_pressure_mod, only: compute_fv3_pressures_tlm
+   use fv_pressure_mod, only: compute_fv3_pressures, compute_fv3_pressures_bwd
 
 ! Tapenade uses
    use tapenade_iter,        only: cp_iter_controls, cp_iter, cp_mod_ini, cp_mod_mid, cp_mod_end, &
@@ -912,9 +912,13 @@ subroutine Run(gc, import, export, clock, rc)
 
           call timing_on(' FV_DYNAMICS_TLM')
 
-          call compute_pressures_tlm( FV_Atm(1)%bd, FV_Atm(1)%npz, kappa, FV_Atm(1)%ptop, &
-                                      FV_Atm(1)%delp, FV_AtmP(1)%delpp, FV_Atm(1)%pe, FV_AtmP(1)%pep, FV_Atm(1)%pk, FV_AtmP(1)%pkp, &
-                                      FV_Atm(1)%pkz, FV_AtmP(1)%pkzp, FV_Atm(1)%peln, FV_AtmP(1)%pelnp )
+          call compute_fv3_pressures_tlm( FV_Atm(1)%bd%is, FV_Atm(1)%bd%ie, &
+                                          FV_Atm(1)%bd%js, FV_Atm(1)%bd%je, &
+                                          FV_Atm(1)%bd%isd, FV_Atm(1)%bd%ied, &
+                                          FV_Atm(1)%bd%jsd, FV_Atm(1)%bd%jed, &
+                                          FV_Atm(1)%npz, kappa, FV_Atm(1)%ptop, &
+                                          FV_Atm(1)%delp, FV_AtmP(1)%delpp, FV_Atm(1)%pe, FV_AtmP(1)%pep, FV_Atm(1)%pk, FV_AtmP(1)%pkp, &
+                                          FV_Atm(1)%pkz, FV_AtmP(1)%pkzp, FV_Atm(1)%peln, FV_AtmP(1)%pelnp )
 
           !Convert potential temperature to dry temperature (GEOS to FV)
           do k=1,FV_Atm(1)%npz
@@ -1006,7 +1010,11 @@ subroutine Run(gc, import, export, clock, rc)
 
        if (cp_iter_controls%cp_i <= 3) then
 
-          call compute_pressures_fwd( FV_Atm(1)%bd, FV_Atm(1)%npz, kappa, FV_Atm(1)%ptop, &
+          call compute_fv3_pressures( FV_Atm(1)%bd%is, FV_Atm(1)%bd%ie, &
+                                      FV_Atm(1)%bd%js, FV_Atm(1)%bd%je, &
+                                      FV_Atm(1)%bd%isd, FV_Atm(1)%bd%ied, &
+                                      FV_Atm(1)%bd%jsd, FV_Atm(1)%bd%jed, &
+                                      FV_Atm(1)%npz, kappa, FV_Atm(1)%ptop, &
                                       FV_Atm(1)%delp, FV_Atm(1)%pe, FV_Atm(1)%pk, FV_Atm(1)%pkz, FV_Atm(1)%peln )
 
           !Convert potential temperature to dry temperature
@@ -1231,9 +1239,13 @@ subroutine Run(gc, import, export, clock, rc)
        END DO
 
        !Backward adjoint of compute pressures
-       call compute_pressures_bwd( FV_Atm(1)%bd, FV_Atm(1)%npz, kappa, FV_Atm(1)%ptop, &
-                                   FV_Atm(1)%delp, FV_AtmP(1)%delpp, FV_Atm(1)%pe, FV_AtmP(1)%pep, FV_Atm(1)%pk, FV_AtmP(1)%pkp, &
-                                   FV_Atm(1)%pkz, FV_AtmP(1)%pkzp, FV_Atm(1)%peln, FV_AtmP(1)%pelnp )
+       call compute_fv3_pressures_bwd( FV_Atm(1)%bd%is, FV_Atm(1)%bd%ie, &
+                                       FV_Atm(1)%bd%js, FV_Atm(1)%bd%je, &
+                                       FV_Atm(1)%bd%isd, FV_Atm(1)%bd%ied, &
+                                       FV_Atm(1)%bd%jsd, FV_Atm(1)%bd%jed, &
+                                       FV_Atm(1)%npz, kappa, FV_Atm(1)%ptop, &
+                                       FV_Atm(1)%delp, FV_AtmP(1)%delpp, FV_Atm(1)%pe, FV_AtmP(1)%pep, FV_Atm(1)%pk, FV_AtmP(1)%pkp, &
+                                       FV_Atm(1)%pkz, FV_AtmP(1)%pkzp, FV_Atm(1)%peln, FV_AtmP(1)%pelnp )
 
        call timing_off(' FV_DYNAMICS_BWD')
 
@@ -1317,7 +1329,7 @@ subroutine Run(gc, import, export, clock, rc)
 
    subroutine DynCoreTestCases
 
-    use test_cases_mod, only: init_case, test_case
+    use test_cases_nlm_mod, only: init_case, test_case
 
 ! 1 - Run Jablonoski-Willaimson NL perturbation
 ! 2 - Run Jablonoski-Willaimson TLM perturbation
@@ -2065,7 +2077,7 @@ subroutine Run(gc, import, export, clock, rc)
 
   subroutine Finalize ( gc, import, export, clock, rc )
 
-    use fv_control_mod, only : fv_end
+    use fv_control_nlm_mod, only : fv_end
 
 ! !ARGUMENTS:
     

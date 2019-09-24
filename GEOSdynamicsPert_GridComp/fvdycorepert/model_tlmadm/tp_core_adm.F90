@@ -22,9 +22,9 @@ module tp_core_adm_mod
 !
 ! !MODULE: tp_core --- A collection of routines to support FV transport
 !
- use fv_mp_mod,         only: ng 
- use fv_grid_utils_mod, only: big_number
- use fv_arrays_mod,     only: fv_grid_type, fv_grid_bounds_type, r_grid
+ use fv_mp_nlm_mod,         only: ng 
+ use fv_grid_utils_nlm_mod, only: big_number
+ use fv_arrays_nlm_mod,     only: fv_grid_type, fv_grid_bounds_type, r_grid
 
  use tapenade_iter, only: pushcontrol, popcontrol, pushinteger, popinteger, &
                           pushrealarray, poprealarray, pushrealarray_adm, poprealarray_adm
@@ -73,10 +73,6 @@ module tp_core_adm_mod
   real, parameter:: p2 = -1./12.
 !   q(i+0.5) = p1*(q(i-1)+q(i)) + p2*(q(i-2)+q(i+1))
 ! integer:: is, ie, js, je, isd, ied, jsd, jed
-
-!---- version number -----
-   character(len=128) :: version = '$Id$'
-   character(len=128) :: tagname = '$Name$'
 
 !
 !EOP
@@ -167,8 +163,8 @@ CONTAINS
     REAL :: fy2_ad(bd%isd:bd%ied, bd%js:bd%je+1)
     REAL :: fyy(bd%isd:bd%ied, bd%js:bd%je+1)
     REAL :: fyy_ad(bd%isd:bd%ied, bd%js:bd%je+1)
-    REAL :: fx1(bd%is:bd%ie+1)
-    REAL :: fx1_ad(bd%is:bd%ie+1)
+    REAL :: fx1(bd%is:bd%ie+1, bd%jsd:bd%jed)
+    REAL :: fx1_ad(bd%is:bd%ie+1, bd%jsd:bd%jed)
     REAL :: damp
     INTEGER :: i, j
     INTEGER :: is, ie, js, je, isd, ied, jsd, jed
@@ -235,12 +231,13 @@ CONTAINS
 &       grid_type)
     DO j=jsd,jed
       DO i=is,ie+1
-        CALL PUSHREALARRAY_ADM(fx1(i))
-        fx1(i) = xfx(i, j)*fx2(i, j)
+        fx1(i, j) = xfx(i, j)*fx2(i, j)
       END DO
+    END DO
+    DO j=jsd,jed
       DO i=is,ie
-        q_j(i, j) = (q(i, j)*gridstruct%area(i, j)+fx1(i)-fx1(i+1))/ra_x&
-&         (i, j)
+        q_j(i, j) = (q(i, j)*gridstruct%area(i, j)+fx1(i, j)-fx1(i+1, j)&
+&         )/ra_x(i, j)
       END DO
     END DO
     CALL PUSHREALARRAY_ADM(fy, (bd%ie-bd%is+1)*(bd%je-bd%js+2))
@@ -260,23 +257,23 @@ CONTAINS
         END IF
       END IF
       fy2_ad = 0.0
-      DO j=je+1,js,-1
+      DO j=js,je+1
         DO i=ie,is,-1
-          temp_ad2 = 0.5*mfy(i, j)*fy_ad(i, j)
-          fy2_ad(i, j) = fy2_ad(i, j) + temp_ad2
+          temp_ad4 = 0.5*mfy(i, j)*fy_ad(i, j)
+          fy2_ad(i, j) = fy2_ad(i, j) + temp_ad4
           mfy_ad(i, j) = mfy_ad(i, j) + 0.5*(fy(i, j)+fy2(i, j))*fy_ad(i&
 &           , j)
-          fy_ad(i, j) = temp_ad2
+          fy_ad(i, j) = temp_ad4
         END DO
       END DO
       fx2_ad = 0.0
-      DO j=je,js,-1
+      DO j=js,je
         DO i=ie+1,is,-1
-          temp_ad1 = 0.5*mfx(i, j)*fx_ad(i, j)
-          fx2_ad(i, j) = fx2_ad(i, j) + temp_ad1
+          temp_ad3 = 0.5*mfx(i, j)*fx_ad(i, j)
+          fx2_ad(i, j) = fx2_ad(i, j) + temp_ad3
           mfx_ad(i, j) = mfx_ad(i, j) + 0.5*(fx(i, j)+fx2(i, j))*fx_ad(i&
 &           , j)
-          fx_ad(i, j) = temp_ad1
+          fx_ad(i, j) = temp_ad3
         END DO
       END DO
     ELSE
@@ -290,21 +287,21 @@ CONTAINS
       fy2_ad = 0.0
       DO j=je+1,js,-1
         DO i=ie,is,-1
-          temp_ad4 = 0.5*yfx(i, j)*fy_ad(i, j)
-          fy2_ad(i, j) = fy2_ad(i, j) + temp_ad4
+          temp_ad2 = 0.5*yfx(i, j)*fy_ad(i, j)
+          fy2_ad(i, j) = fy2_ad(i, j) + temp_ad2
           yfx_ad(i, j) = yfx_ad(i, j) + 0.5*(fy(i, j)+fy2(i, j))*fy_ad(i&
 &           , j)
-          fy_ad(i, j) = temp_ad4
+          fy_ad(i, j) = temp_ad2
         END DO
       END DO
       fx2_ad = 0.0
       DO j=je,js,-1
         DO i=ie+1,is,-1
-          temp_ad3 = 0.5*xfx(i, j)*fx_ad(i, j)
-          fx2_ad(i, j) = fx2_ad(i, j) + temp_ad3
+          temp_ad1 = 0.5*xfx(i, j)*fx_ad(i, j)
+          fx2_ad(i, j) = fx2_ad(i, j) + temp_ad1
           xfx_ad(i, j) = xfx_ad(i, j) + 0.5*(fx(i, j)+fx2(i, j))*fx_ad(i&
 &           , j)
-          fx_ad(i, j) = temp_ad3
+          fx_ad(i, j) = temp_ad1
         END DO
       END DO
     END IF
@@ -318,17 +315,18 @@ CONTAINS
       DO i=ie,is,-1
         temp_ad0 = q_j_ad(i, j)/ra_x(i, j)
         q_ad(i, j) = q_ad(i, j) + gridstruct%area(i, j)*temp_ad0
-        fx1_ad(i) = fx1_ad(i) + temp_ad0
-        fx1_ad(i+1) = fx1_ad(i+1) - temp_ad0
+        fx1_ad(i, j) = fx1_ad(i, j) + temp_ad0
+        fx1_ad(i+1, j) = fx1_ad(i+1, j) - temp_ad0
         ra_x_ad(i, j) = ra_x_ad(i, j) - (gridstruct%area(i, j)*q(i, j)+&
-&         fx1(i)-fx1(i+1))*temp_ad0/ra_x(i, j)
+&         fx1(i, j)-fx1(i+1, j))*temp_ad0/ra_x(i, j)
         q_j_ad(i, j) = 0.0
       END DO
+    END DO
+    DO j=jsd,jed
       DO i=ie+1,is,-1
-        CALL POPREALARRAY_ADM(fx1(i))
-        xfx_ad(i, j) = xfx_ad(i, j) + fx2(i, j)*fx1_ad(i)
-        fx2_ad(i, j) = fx2_ad(i, j) + xfx(i, j)*fx1_ad(i)
-        fx1_ad(i) = 0.0
+        xfx_ad(i, j) = xfx_ad(i, j) + fx2(i, j)*fx1_ad(i, j)
+        fx2_ad(i, j) = fx2_ad(i, j) + xfx(i, j)*fx1_ad(i, j)
+        fx1_ad(i, j) = 0.0
       END DO
     END DO
     CALL XPPM_ADM(fx2, fx2_ad, q, q_ad, crx, crx_ad, ord_in, is, ie, isd&
@@ -420,7 +418,7 @@ CONTAINS
     REAL :: fx2(bd%is:bd%ie+1, bd%jsd:bd%jed)
     REAL :: fy2(bd%isd:bd%ied, bd%js:bd%je+1)
     REAL :: fyy(bd%isd:bd%ied, bd%js:bd%je+1)
-    REAL :: fx1(bd%is:bd%ie+1)
+    REAL :: fx1(bd%is:bd%ie+1, bd%jsd:bd%jed)
     REAL :: damp
     INTEGER :: i, j
     INTEGER :: is, ie, js, je, isd, ied, jsd, jed
@@ -473,11 +471,13 @@ CONTAINS
 &       grid_type)
     DO j=jsd,jed
       DO i=is,ie+1
-        fx1(i) = xfx(i, j)*fx2(i, j)
+        fx1(i, j) = xfx(i, j)*fx2(i, j)
       END DO
+    END DO
+    DO j=jsd,jed
       DO i=is,ie
-        q_j(i, j) = (q(i, j)*gridstruct%area(i, j)+fx1(i)-fx1(i+1))/ra_x&
-&         (i, j)
+        q_j(i, j) = (q(i, j)*gridstruct%area(i, j)+fx1(i, j)-fx1(i+1, j)&
+&         )/ra_x(i, j)
       END DO
     END DO
     CALL YPPM(fy, q_j, cry, ord_ou, is, ie, isd, ied, js, je, jsd, jed, &
@@ -7061,30 +7061,11 @@ CONTAINS
     REAL :: fx2(bd%is:bd%ie+1, bd%jsd:bd%jed)
     REAL :: fy2(bd%isd:bd%ied, bd%js:bd%je+1)
     REAL :: fyy(bd%isd:bd%ied, bd%js:bd%je+1)
-    REAL :: fx1(bd%is:bd%ie+1)
+    REAL :: fx1(bd%is:bd%ie+1, bd%jsd:bd%jed)
     REAL :: damp
     INTEGER :: i, j
     INTEGER :: is, ie, js, je, isd, ied, jsd, jed
     INTRINSIC PRESENT
-
-    ord_ou = 0
-    ord_in = 0
-    q_i = 0.0
-    q_j = 0.0
-    fx2 = 0.0
-    fy2 = 0.0
-    fyy = 0.0
-    fx1 = 0.0
-    damp = 0.0
-    is = 0
-    ie = 0
-    js = 0
-    je = 0
-    isd = 0
-    ied = 0
-    jsd = 0
-    jed = 0
-
     is = bd%is
     ie = bd%ie
     js = bd%js
@@ -7135,14 +7116,16 @@ CONTAINS
     CALL XPPM_FWD(fx2, q, crx, ord_in, is, ie, isd, ied, jsd, jed, &
 &              jsd, jed, npx, npy, gridstruct%dxa, gridstruct%nested, &
 &              gridstruct%grid_type)
+    CALL PUSHREALARRAY(fx2, (bd%ie-bd%is+2)*(bd%jed-bd%jsd+1))
     DO j=jsd,jed
       DO i=is,ie+1
-        CALL PUSHREALARRAY(fx1(i))
-        fx1(i) = xfx(i, j)*fx2(i, j)
+        fx1(i, j) = xfx(i, j)*fx2(i, j)
       END DO
+    END DO
+    DO j=jsd,jed
       DO i=is,ie
-        q_j(i, j) = (q(i, j)*gridstruct%area(i, j)+fx1(i)-fx1(i+1))/ra_x&
-&         (i, j)
+        q_j(i, j) = (q(i, j)*gridstruct%area(i, j)+fx1(i, j)-fx1(i+1, j)&
+&         )/ra_x(i, j)
       END DO
     END DO
     CALL YPPM_FWD(fy, q_j, cry, ord_ou, is, ie, isd, ied, js, je, jsd&
@@ -7152,18 +7135,18 @@ CONTAINS
 ! Flux averaging:
 !----------------
     IF (PRESENT(mfx) .AND. PRESENT(mfy)) THEN
+      CALL PUSHREALARRAY(fx, (bd%ie-bd%is+2)*(bd%je-bd%js+1))
 !---------------------------------
 ! For transport of pt and tracers
 !---------------------------------
       DO j=js,je
         DO i=is,ie+1
-          CALL PUSHREALARRAY(fx(i, j))
           fx(i, j) = 0.5*(fx(i, j)+fx2(i, j))*mfx(i, j)
         END DO
       END DO
+      CALL PUSHREALARRAY(fy, (bd%ie-bd%is+1)*(bd%je-bd%js+2))
       DO j=js,je+1
         DO i=is,ie
-          CALL PUSHREALARRAY(fy(i, j))
           fy(i, j) = 0.5*(fy(i, j)+fy2(i, j))*mfy(i, j)
         END DO
       END DO
@@ -7174,14 +7157,14 @@ CONTAINS
 &                         , fx, fy, gridstruct, bd, mass)
           CALL PUSHREALARRAY(fyy, (bd%ied-bd%isd+1)*(bd%je-bd%js+2))
           CALL PUSHREALARRAY(fx2, (bd%ie-bd%is+2)*(bd%jed-bd%jsd+1))
-          CALL PUSHREALARRAY(fx1, bd%ie - bd%is + 2)
+          CALL PUSHREALARRAY(fx1, (bd%ie-bd%is+2)*(bd%jed-bd%jsd+1))
           CALL PUSHREALARRAY(q_j, (bd%ie-bd%is+1)*(bd%jed-bd%jsd+1))
           CALL PUSHREALARRAY(fy2, (bd%ied-bd%isd+1)*(bd%je-bd%js+2))
           CALL PUSHCONTROL(3,2)
         ELSE
           CALL PUSHREALARRAY(fyy, (bd%ied-bd%isd+1)*(bd%je-bd%js+2))
           CALL PUSHREALARRAY(fx2, (bd%ie-bd%is+2)*(bd%jed-bd%jsd+1))
-          CALL PUSHREALARRAY(fx1, bd%ie - bd%is + 2)
+          CALL PUSHREALARRAY(fx1, (bd%ie-bd%is+2)*(bd%jed-bd%jsd+1))
           CALL PUSHINTEGER(je)
           CALL PUSHINTEGER(is)
           CALL PUSHINTEGER(ie)
@@ -7193,7 +7176,7 @@ CONTAINS
       ELSE
         CALL PUSHREALARRAY(fyy, (bd%ied-bd%isd+1)*(bd%je-bd%js+2))
         CALL PUSHREALARRAY(fx2, (bd%ie-bd%is+2)*(bd%jed-bd%jsd+1))
-        CALL PUSHREALARRAY(fx1, bd%ie - bd%is + 2)
+        CALL PUSHREALARRAY(fx1, (bd%ie-bd%is+2)*(bd%jed-bd%jsd+1))
         CALL PUSHINTEGER(je)
         CALL PUSHINTEGER(is)
         CALL PUSHINTEGER(ie)
@@ -7225,14 +7208,14 @@ CONTAINS
 &                         , fx, fy, gridstruct, bd)
           CALL PUSHREALARRAY(fyy, (bd%ied-bd%isd+1)*(bd%je-bd%js+2))
           CALL PUSHREALARRAY(fx2, (bd%ie-bd%is+2)*(bd%jed-bd%jsd+1))
-          CALL PUSHREALARRAY(fx1, bd%ie - bd%is + 2)
+          CALL PUSHREALARRAY(fx1, (bd%ie-bd%is+2)*(bd%jed-bd%jsd+1))
           CALL PUSHREALARRAY(q_j, (bd%ie-bd%is+1)*(bd%jed-bd%jsd+1))
           CALL PUSHREALARRAY(fy2, (bd%ied-bd%isd+1)*(bd%je-bd%js+2))
           CALL PUSHCONTROL(3,5)
         ELSE
           CALL PUSHREALARRAY(fyy, (bd%ied-bd%isd+1)*(bd%je-bd%js+2))
           CALL PUSHREALARRAY(fx2, (bd%ie-bd%is+2)*(bd%jed-bd%jsd+1))
-          CALL PUSHREALARRAY(fx1, bd%ie - bd%is + 2)
+          CALL PUSHREALARRAY(fx1, (bd%ie-bd%is+2)*(bd%jed-bd%jsd+1))
           CALL PUSHINTEGER(je)
           CALL PUSHINTEGER(is)
           CALL PUSHINTEGER(ie)
@@ -7244,7 +7227,7 @@ CONTAINS
       ELSE
         CALL PUSHREALARRAY(fyy, (bd%ied-bd%isd+1)*(bd%je-bd%js+2))
         CALL PUSHREALARRAY(fx2, (bd%ie-bd%is+2)*(bd%jed-bd%jsd+1))
-        CALL PUSHREALARRAY(fx1, bd%ie - bd%is + 2)
+        CALL PUSHREALARRAY(fx1, (bd%ie-bd%is+2)*(bd%jed-bd%jsd+1))
         CALL PUSHINTEGER(je)
         CALL PUSHINTEGER(is)
         CALL PUSHINTEGER(ie)
@@ -7323,8 +7306,8 @@ CONTAINS
     REAL :: fy2_ad(bd%isd:bd%ied, bd%js:bd%je+1)
     REAL :: fyy(bd%isd:bd%ied, bd%js:bd%je+1)
     REAL :: fyy_ad(bd%isd:bd%ied, bd%js:bd%je+1)
-    REAL :: fx1(bd%is:bd%ie+1)
-    REAL :: fx1_ad(bd%is:bd%ie+1)
+    REAL :: fx1(bd%is:bd%ie+1, bd%jsd:bd%jed)
+    REAL :: fx1_ad(bd%is:bd%ie+1, bd%jsd:bd%jed)
     REAL :: damp
     INTEGER :: i, j
     INTEGER :: is, ie, js, je, isd, ied, jsd, jed
@@ -7365,7 +7348,7 @@ CONTAINS
         CALL POPINTEGER(ie)
         CALL POPINTEGER(is)
         CALL POPINTEGER(je)
-        CALL POPREALARRAY(fx1, bd%ie - bd%is + 2)
+        CALL POPREALARRAY(fx1, (bd%ie-bd%is+2)*(bd%jed-bd%jsd+1))
         CALL POPREALARRAY(fx2, (bd%ie-bd%is+2)*(bd%jed-bd%jsd+1))
         CALL POPREALARRAY(fyy, (bd%ied-bd%isd+1)*(bd%je-bd%js+2))
       ELSE IF (branch .EQ. 1) THEN
@@ -7375,13 +7358,13 @@ CONTAINS
         CALL POPINTEGER(ie)
         CALL POPINTEGER(is)
         CALL POPINTEGER(je)
-        CALL POPREALARRAY(fx1, bd%ie - bd%is + 2)
+        CALL POPREALARRAY(fx1, (bd%ie-bd%is+2)*(bd%jed-bd%jsd+1))
         CALL POPREALARRAY(fx2, (bd%ie-bd%is+2)*(bd%jed-bd%jsd+1))
         CALL POPREALARRAY(fyy, (bd%ied-bd%isd+1)*(bd%je-bd%js+2))
       ELSE
         CALL POPREALARRAY(fy2, (bd%ied-bd%isd+1)*(bd%je-bd%js+2))
         CALL POPREALARRAY(q_j, (bd%ie-bd%is+1)*(bd%jed-bd%jsd+1))
-        CALL POPREALARRAY(fx1, bd%ie - bd%is + 2)
+        CALL POPREALARRAY(fx1, (bd%ie-bd%is+2)*(bd%jed-bd%jsd+1))
         CALL POPREALARRAY(fx2, (bd%ie-bd%is+2)*(bd%jed-bd%jsd+1))
         CALL POPREALARRAY(fyy, (bd%ied-bd%isd+1)*(bd%je-bd%js+2))
         js = bd%js
@@ -7394,25 +7377,25 @@ CONTAINS
 &                       , mass_ad)
       END IF
       fy2_ad = 0.0
-      DO j=je+1,js,-1
+      CALL POPREALARRAY(fy, (bd%ie-bd%is+1)*(bd%je-bd%js+2))
+      DO j=js,je+1
         DO i=ie,is,-1
-          CALL POPREALARRAY(fy(i, j))
-          temp_ad2 = 0.5*mfy(i, j)*fy_ad(i, j)
-          fy2_ad(i, j) = fy2_ad(i, j) + temp_ad2
+          temp_ad4 = 0.5*mfy(i, j)*fy_ad(i, j)
+          fy2_ad(i, j) = fy2_ad(i, j) + temp_ad4
           mfy_ad(i, j) = mfy_ad(i, j) + 0.5*(fy(i, j)+fy2(i, j))*fy_ad(i&
 &           , j)
-          fy_ad(i, j) = temp_ad2
+          fy_ad(i, j) = temp_ad4
         END DO
       END DO
       fx2_ad = 0.0
-      DO j=je,js,-1
+      CALL POPREALARRAY(fx, (bd%ie-bd%is+2)*(bd%je-bd%js+1))
+      DO j=js,je
         DO i=ie+1,is,-1
-          CALL POPREALARRAY(fx(i, j))
-          temp_ad1 = 0.5*mfx(i, j)*fx_ad(i, j)
-          fx2_ad(i, j) = fx2_ad(i, j) + temp_ad1
+          temp_ad3 = 0.5*mfx(i, j)*fx_ad(i, j)
+          fx2_ad(i, j) = fx2_ad(i, j) + temp_ad3
           mfx_ad(i, j) = mfx_ad(i, j) + 0.5*(fx(i, j)+fx2(i, j))*fx_ad(i&
 &           , j)
-          fx_ad(i, j) = temp_ad1
+          fx_ad(i, j) = temp_ad3
         END DO
       END DO
     ELSE
@@ -7423,7 +7406,7 @@ CONTAINS
         CALL POPINTEGER(ie)
         CALL POPINTEGER(is)
         CALL POPINTEGER(je)
-        CALL POPREALARRAY(fx1, bd%ie - bd%is + 2)
+        CALL POPREALARRAY(fx1, (bd%ie-bd%is+2)*(bd%jed-bd%jsd+1))
         CALL POPREALARRAY(fx2, (bd%ie-bd%is+2)*(bd%jed-bd%jsd+1))
         CALL POPREALARRAY(fyy, (bd%ied-bd%isd+1)*(bd%je-bd%js+2))
       ELSE IF (branch .EQ. 4) THEN
@@ -7433,13 +7416,13 @@ CONTAINS
         CALL POPINTEGER(ie)
         CALL POPINTEGER(is)
         CALL POPINTEGER(je)
-        CALL POPREALARRAY(fx1, bd%ie - bd%is + 2)
+        CALL POPREALARRAY(fx1, (bd%ie-bd%is+2)*(bd%jed-bd%jsd+1))
         CALL POPREALARRAY(fx2, (bd%ie-bd%is+2)*(bd%jed-bd%jsd+1))
         CALL POPREALARRAY(fyy, (bd%ied-bd%isd+1)*(bd%je-bd%js+2))
       ELSE
         CALL POPREALARRAY(fy2, (bd%ied-bd%isd+1)*(bd%je-bd%js+2))
         CALL POPREALARRAY(q_j, (bd%ie-bd%is+1)*(bd%jed-bd%jsd+1))
-        CALL POPREALARRAY(fx1, bd%ie - bd%is + 2)
+        CALL POPREALARRAY(fx1, (bd%ie-bd%is+2)*(bd%jed-bd%jsd+1))
         CALL POPREALARRAY(fx2, (bd%ie-bd%is+2)*(bd%jed-bd%jsd+1))
         CALL POPREALARRAY(fyy, (bd%ied-bd%isd+1)*(bd%je-bd%js+2))
         js = bd%js
@@ -7454,22 +7437,22 @@ CONTAINS
       DO j=je+1,js,-1
         DO i=ie,is,-1
           CALL POPREALARRAY(fy(i, j))
-          temp_ad4 = 0.5*yfx(i, j)*fy_ad(i, j)
-          fy2_ad(i, j) = fy2_ad(i, j) + temp_ad4
+          temp_ad2 = 0.5*yfx(i, j)*fy_ad(i, j)
+          fy2_ad(i, j) = fy2_ad(i, j) + temp_ad2
           yfx_ad(i, j) = yfx_ad(i, j) + 0.5*(fy(i, j)+fy2(i, j))*fy_ad(i&
 &           , j)
-          fy_ad(i, j) = temp_ad4
+          fy_ad(i, j) = temp_ad2
         END DO
       END DO
       fx2_ad = 0.0
       DO j=je,js,-1
         DO i=ie+1,is,-1
           CALL POPREALARRAY(fx(i, j))
-          temp_ad3 = 0.5*xfx(i, j)*fx_ad(i, j)
-          fx2_ad(i, j) = fx2_ad(i, j) + temp_ad3
+          temp_ad1 = 0.5*xfx(i, j)*fx_ad(i, j)
+          fx2_ad(i, j) = fx2_ad(i, j) + temp_ad1
           xfx_ad(i, j) = xfx_ad(i, j) + 0.5*(fx(i, j)+fx2(i, j))*fx_ad(i&
 &           , j)
-          fx_ad(i, j) = temp_ad3
+          fx_ad(i, j) = temp_ad1
         END DO
       END DO
     END IF
@@ -7486,17 +7469,19 @@ CONTAINS
       DO i=ie,is,-1
         temp_ad0 = q_j_ad(i, j)/ra_x(i, j)
         q_ad(i, j) = q_ad(i, j) + gridstruct%area(i, j)*temp_ad0
-        fx1_ad(i) = fx1_ad(i) + temp_ad0
-        fx1_ad(i+1) = fx1_ad(i+1) - temp_ad0
+        fx1_ad(i, j) = fx1_ad(i, j) + temp_ad0
+        fx1_ad(i+1, j) = fx1_ad(i+1, j) - temp_ad0
         ra_x_ad(i, j) = ra_x_ad(i, j) - (gridstruct%area(i, j)*q(i, j)+&
-&         fx1(i)-fx1(i+1))*temp_ad0/ra_x(i, j)
+&         fx1(i, j)-fx1(i+1, j))*temp_ad0/ra_x(i, j)
         q_j_ad(i, j) = 0.0
       END DO
+    END DO
+    CALL POPREALARRAY(fx2, (bd%ie-bd%is+2)*(bd%jed-bd%jsd+1))
+    DO j=jsd,jed
       DO i=ie+1,is,-1
-        CALL POPREALARRAY(fx1(i))
-        xfx_ad(i, j) = xfx_ad(i, j) + fx2(i, j)*fx1_ad(i)
-        fx2_ad(i, j) = fx2_ad(i, j) + xfx(i, j)*fx1_ad(i)
-        fx1_ad(i) = 0.0
+        xfx_ad(i, j) = xfx_ad(i, j) + fx2(i, j)*fx1_ad(i, j)
+        fx2_ad(i, j) = fx2_ad(i, j) + xfx(i, j)*fx1_ad(i, j)
+        fx1_ad(i, j) = 0.0
       END DO
     END DO
     CALL XPPM_BWD(fx2, fx2_ad, q, q_ad, crx, crx_ad, ord_in, is, ie, &

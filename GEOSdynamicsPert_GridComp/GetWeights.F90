@@ -6,8 +6,8 @@
    subroutine GetWeights_init (in_ntiles,in_ncnst,in_npx,in_npy,in_npz,&
          in_nx,in_ny,in_hydro,in_mknh,comm)
       use fms_mod,           only: fms_init, set_domain
-      use fv_control_mod,    only: fv_init1, fv_init2
-      use fv_arrays_mod,     only: REAL4, REAL8, FVPRC
+      use fv_control_nlm_mod,    only: fv_init1, fv_init2
+      use fv_arrays_nlm_mod,     only: REAL4, REAL8, FVPRC
       use GEOS_DynCorePertGridCompMod,       only : FV_Atm  
       implicit none
       integer,intent(in) :: in_ntiles,in_ncnst
@@ -53,15 +53,15 @@
       use MAPL_BaseMod
       use MAPL_GenericMod
       use MAPL_ShmemMod
-      use fv_grid_utils_mod, only : gnomonic_grids, cell_center2, mid_pt_sphere
-      use fv_grid_tools_mod, only : mirror_grid
-      use fv_grid_tools_mod, only : get_unit_vector
-      use fv_grid_utils_mod, only : inner_prod
-      use fv_arrays_mod,     only : REAL4, REAL8, FVPRC
+      use fv_grid_utils_nlm_mod, only : gnomonic_grids, cell_center2, mid_pt_sphere
+      use fv_grid_tools_nlm_mod, only : mirror_grid
+      use fv_grid_tools_nlm_mod, only : get_unit_vector
+      use fv_grid_utils_nlm_mod, only : inner_prod
+      use fv_arrays_nlm_mod,     only : REAL4, REAL8, FVPRC
       use CUB2LATLON_mod,    only : init_latlon_grid, get_c2l_weight
       use GHOST_CUBSPH_mod,  only : B_grid, A_grid, ghost_cubsph_update
       use GEOS_DynCorePertGridCompMod,       only : FV_Atm  
-      use fv_mp_mod,         only : is,js,ie,je, is_master
+      use fv_mp_nlm_mod,         only : is,js,ie,je, is_master
 
       include "netcdf.inc"
 
@@ -506,9 +506,9 @@
       use mpp_domains_mod,   only: mpp_update_domains, mpp_get_boundary, DGRID_NE
       use mpp_parameter_mod, only: AGRID
       use GEOS_DynCorePertGridCompMod,       only: fv_atm
-      use fv_arrays_mod,     only: REAL4, REAL8, FVPRC
-      use fv_mp_mod,         only: is,js,ie,je,isd,jsd,ied,jed,ng
-      use sw_core_mod,       only: d2a2c_vect
+      use fv_arrays_nlm_mod,     only: REAL4, REAL8, FVPRC
+      use fv_mp_nlm_mod,         only: is,js,ie,je,isd,jsd,ied,jed,ng
+      use sw_core_nlm_mod,       only: d2a2c_vect
       implicit none
 
       real,    intent(INOUT)           :: U(:,:,:)

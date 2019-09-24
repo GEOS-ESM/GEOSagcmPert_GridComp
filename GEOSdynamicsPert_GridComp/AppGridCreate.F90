@@ -7,9 +7,9 @@ subroutine AppCSEdgeCreateF(IM_WORLD, LonEdge,LatEdge, LonCenter, LatCenter, rc)
   use MAPL_BaseMod
   use MAPL_GenericMod
   use MAPL_ConstantsMod, only : pi=> MAPL_PI_R8
-  use fv_arrays_mod,     only: REAL4, REAL8, R_GRID
-  use fv_grid_utils_mod, only: gnomonic_grids, cell_center2, direct_transform
-  use fv_grid_tools_mod, only: mirror_grid
+  use fv_arrays_nlm_mod,     only: REAL4, REAL8, R_GRID
+  use fv_grid_utils_nlm_mod, only: gnomonic_grids, cell_center2, direct_transform
+  use fv_grid_tools_nlm_mod, only: mirror_grid
   use GEOS_DynCorePertGridCompMod, only: FV_Atm
   implicit none
 
@@ -133,9 +133,9 @@ function AppGridCreateF(IM_WORLD, JM_WORLD, LM, NX, NY, rc) result(esmfgrid)
   use MAPL_ConstantsMod, only : pi=> MAPL_PI_R8
   use MAPL_ShmemMod
 
-  use fv_arrays_mod,     only: REAL4, REAL8, R_GRID
-  use fv_grid_utils_mod, only: gnomonic_grids, cell_center2, direct_transform
-  use fv_grid_tools_mod, only: mirror_grid
+  use fv_arrays_nlm_mod,     only: REAL4, REAL8, R_GRID
+  use fv_grid_utils_nlm_mod, only: gnomonic_grids, cell_center2, direct_transform
+  use fv_grid_tools_nlm_mod, only: mirror_grid
   use GEOS_DynCorePertGridCompMod, only: FV_Atm
 
   implicit none
@@ -442,7 +442,7 @@ subroutine AppGridCreate (META, esmfgrid, RC)
   use MAPL_Mod
   use MAPL_BaseMod
   use MAPL_GenericMod
-  use fv_arrays_mod,     only: REAL4, REAL8, R_GRID
+  use fv_arrays_nlm_mod,     only: REAL4, REAL8, R_GRID
   implicit none
 
 ! !ARGUMENTS:

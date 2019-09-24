@@ -45,8 +45,8 @@ subroutine GetWeightsC2C( npx_in, npy_in, npx_out, npy_out, index, weight, &
 contains
   subroutine init_cube_corners(npx, npy, sph_corner, ee1, ee2, ff1, ff2)
 
-    use fv_grid_utils_mod, only : gnomonic_grids, cell_center2
-    use fv_grid_tools_mod, only : mirror_grid
+    use fv_grid_utils_nlm_mod, only : gnomonic_grids, cell_center2
+    use fv_grid_tools_nlm_mod, only : mirror_grid
     use GHOST_CUBSPH_mod,  only : B_grid, A_grid, ghost_cubsph_update
 
 
@@ -177,8 +177,8 @@ contains
 
   subroutine CreateCube2LatLonRotation(grid, center, ee1, ee2, ff1, ff2)
 
-    use fv_grid_utils_mod, only : mid_pt_sphere
-    use fv_grid_tools_mod, only : get_unit_vector
+    use fv_grid_utils_nlm_mod, only : mid_pt_sphere
+    use fv_grid_tools_nlm_mod, only : get_unit_vector
 
     real(R8), intent(IN)    :: grid(0:1,0:1,2), center(2)
     real(R8), intent(OUT), dimension(3) :: ee1, ee2, ff1, ff2

@@ -9,7 +9,7 @@ module GRID_UTILS_mod
   ! routines for grid calculations on the sphere                       !
   !--------------------------------------------------------------------!
 
-  use fv_arrays_mod, only: REAL8
+  use fv_arrays_nlm_mod, only: REAL8
 
   implicit none
 

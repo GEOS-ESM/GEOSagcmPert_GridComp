@@ -1,7 +1,7 @@
 !-*- F90 -*-
 module FILL_CORNER_mod
 
-  use fv_arrays_mod, only: REAL8
+  use fv_arrays_nlm_mod, only: REAL8
 
   implicit none
 

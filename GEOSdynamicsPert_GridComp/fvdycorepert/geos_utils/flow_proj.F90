@@ -8,7 +8,7 @@ module FLOW_PROJ_mod
   !                                                                    !
   ! routines for projection of flow vectors and components             !
   !--------------------------------------------------------------------!
-  use fv_arrays_mod, only: REAL8
+  use fv_arrays_nlm_mod, only: REAL8
 
   implicit none
 

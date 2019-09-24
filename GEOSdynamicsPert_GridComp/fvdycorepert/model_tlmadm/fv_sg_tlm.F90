@@ -26,7 +26,7 @@ module fv_sg_tlm_mod
   use tracer_manager_mod, only: get_tracer_index
   use field_manager_mod,  only: MODEL_ATMOS
   use lin_cld_microphys_mod, only: wqs2, wqsat2_moist
-  use fv_mp_mod,          only: mp_reduce_min, is_master
+  use fv_mp_nlm_mod,          only: mp_reduce_min, is_master
 
 implicit none
 private
@@ -64,10 +64,6 @@ public  fv_subgrid_z, neg_adj3
   real, parameter:: zvir =  rvgas/rdgas - 1.     ! = 0.607789855
   real, allocatable:: table(:),des(:)
   real:: lv00, d0_vap
-
-!---- version number -----
-  character(len=128) :: version = '$Id$'
-  character(len=128) :: tagname = '$Name$'
 
 CONTAINS
 !  Differentiation of fv_subgrid_z in forward (tangent) mode:

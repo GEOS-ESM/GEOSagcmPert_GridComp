@@ -19,12 +19,12 @@
 !***********************************************************************
 module a2b_edge_tlm_mod
 
-  use fv_grid_utils_mod, only: great_circle_dist
+  use fv_grid_utils_nlm_mod, only: great_circle_dist
 #ifdef VAN2
-  use fv_grid_utils_mod, only: van2
+  use fv_grid_utils_nlm_mod, only: van2
 #endif
 
-  use fv_arrays_mod,     only: fv_grid_type, R_GRID
+  use fv_arrays_nlm_mod,     only: fv_grid_type, R_GRID
 
   implicit none
 
@@ -43,10 +43,6 @@ module a2b_edge_tlm_mod
   private
   public :: a2b_ord2, a2b_ord4
   public :: a2b_ord2_tlm, a2b_ord4_tlm
-
-!---- version number -----
-  character(len=128) :: version = '$Id$'
-  character(len=128) :: tagname = '$Name$'
 
 CONTAINS
   SUBROUTINE A2B_ORD4(qin, qout, gridstruct, npx, npy, is, ie, js, je, &

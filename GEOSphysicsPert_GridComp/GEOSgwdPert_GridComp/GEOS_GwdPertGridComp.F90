@@ -23,7 +23,7 @@ module GEOS_GwdPertGridCompMod
   use GW_DRAG_D
   use GW_DRAG_B
 
-  use fv_timing_mod,  only: timing_on, timing_off
+  use fv_timing_nlm_mod,  only: timing_on, timing_off
 
   implicit none
   private

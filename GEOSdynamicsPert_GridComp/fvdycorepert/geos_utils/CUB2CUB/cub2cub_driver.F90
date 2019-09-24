@@ -7,7 +7,7 @@ program cub2cub_driver
   ! purpose: driver for interpolation between two cubed sphere grids   !
   !          with different spatial resolution                         !
   !--------------------------------------------------------------------!
-  use fv_arrays_mod,  only: REAL4, REAL8, FVPRC
+  use fv_arrays_nlm_mod,  only: REAL4, REAL8, FVPRC
   use CUB2CUB_mod,    only: read_c2c_namelist,              &
                             get_c2c_weight,                 &
                             interpolate_c2c

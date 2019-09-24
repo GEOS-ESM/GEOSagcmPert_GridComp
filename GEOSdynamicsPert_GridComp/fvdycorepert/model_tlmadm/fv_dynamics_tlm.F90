@@ -27,37 +27,37 @@ module fv_dynamics_tlm_mod
    use fv_tracer2d_tlm_mod,     only: tracer_2d_tlm, tracer_2d_1L_tlm, tracer_2d_nested_tlm
    use fv_grid_utils_tlm_mod,   only: cubed_to_latlon, c2l_ord2, g_sum
    use fv_grid_utils_tlm_mod,   only: c2l_ord2_tlm, g_sum_tlm
-   use fv_fill_mod,             only: fill2D
-   use fv_mp_mod,               only: is_master
-   use fv_mp_mod,               only: group_halo_update_type
+   use fv_fill_nlm_mod,             only: fill2D
+   use fv_mp_nlm_mod,               only: is_master
+   use fv_mp_nlm_mod,               only: group_halo_update_type
    use fv_mp_tlm_mod,           only: start_group_halo_update, complete_group_halo_update
    use fv_mp_tlm_mod,           only: start_group_halo_update_tlm
-   use fv_timing_mod,           only: timing_on, timing_off
+   use fv_timing_nlm_mod,           only: timing_on, timing_off
    use diag_manager_mod,        only: send_data
-   use fv_diagnostics_mod,      only: fv_time, prt_mxm, range_check, prt_minmax
+   use fv_diagnostics_nlm_mod,      only: fv_time, prt_mxm, range_check, prt_minmax
    use mpp_domains_mod,         only: mpp_update_domains, DGRID_NE, CGRID_NE, domain2D
    use fv_mp_tlm_mod,           only: mpp_update_domains_tlm
    use mpp_mod,                 only: mpp_pe
    use field_manager_mod,       only: MODEL_ATMOS
    use tracer_manager_mod,      only: get_tracer_index
-   use fv_sg_mod,               only: neg_adj3
+   use fv_sg_nlm_mod,               only: neg_adj3
    use fv_nesting_tlm_mod,      only: setup_nested_grid_BCs
    use fv_nesting_tlm_mod,      only: setup_nested_grid_BCs_tlm
    use boundary_tlm_mod,        only: nested_grid_BC_apply_intT
    use boundary_tlm_mod,        only: nested_grid_BC_apply_intT_tlm
-   use fv_arrays_mod,           only: fv_grid_type, fv_flags_type, fv_atmos_type, fv_nest_type, fv_diag_type, fv_grid_bounds_type
-   use fv_nwp_nudge_mod,        only: do_adiabatic_init
-#ifdef MAPL_MODE
-   use fv_control_mod,          only: dyn_timer, comm_timer
-#endif
-   use fv_arrays_nlm_mod,       only: fv_flags_pert_type, fpp
+   use fv_arrays_nlm_mod,           only: fv_grid_type, fv_flags_type, fv_atmos_type, fv_nest_type, fv_diag_type, fv_grid_bounds_type
+   use fv_nwp_nudge_nlm_mod,        only: do_adiabatic_init
+!#ifdef MAPL_MODE
+!   use fv_control_nlm_mod,          only: dyn_timer, comm_timer
+!#endif
+   use fv_arrays_tlmadm_mod,       only: fv_flags_pert_type, fpp
 
 implicit none
 
-#ifdef MAPL_MODE
-  ! Include the MPI library definitons:
-  include 'mpif.h'
-#endif
+!#ifdef MAPL_MODE
+!  ! Include the MPI library definitons:
+!  include 'mpif.h'
+!#endif
 
    logical :: RF_initialized = .false.
    logical :: pt_initialized = .false.
@@ -71,10 +71,6 @@ implicit none
 #endif
 private
 public :: fv_dynamics, fv_dynamics_tlm
-
-!---- version number -----
-   character(len=128) :: version = '$Id$'
-   character(len=128) :: tagname = '$Name$'
 
 CONTAINS
 !  Differentiation of fv_dynamics in forward (tangent) mode:
@@ -223,13 +219,8 @@ CONTAINS
     REAL :: dp1(bd%isd:bd%ied, bd%jsd:bd%jed, npz), dtdt_m(bd%is:bd%ie, &
 &   bd%js:bd%je, npz), cappa(bd%isd:bd%ied, bd%jsd:bd%jed, npz)
     REAL :: dp1_tl(bd%isd:bd%ied, bd%jsd:bd%jed, npz)
-#ifdef OVERLOAD_R4
-    REAL(kind=4) :: psx(bd%isd:bd%ied, bd%jsd:bd%jed)
-    REAL(kind=4) :: psx_tl(bd%isd:bd%ied, bd%jsd:bd%jed)
-#else
     REAL(kind=8) :: psx(bd%isd:bd%ied, bd%jsd:bd%jed)
     REAL(kind=8) :: psx_tl(bd%isd:bd%ied, bd%jsd:bd%jed)
-#endif
     REAL(kind=8) :: dpx(bd%is:bd%ie, bd%js:bd%je)
     REAL(kind=8) :: dpx_tl(bd%is:bd%ie, bd%js:bd%je)
     REAL :: akap, rdg, ph1, ph2, mdt, gam, amdt, u0
@@ -323,8 +314,8 @@ CONTAINS
     ied = bd%ied
     jsd = bd%jsd
     jed = bd%jed
-    dyn_timer = 0
-    comm_timer = 0
+!    dyn_timer = 0
+!    comm_timer = 0
 !     cv_air =  cp_air - rdgas
     agrav = 1./grav
     dt2 = 0.5*bdt
@@ -999,7 +990,7 @@ CONTAINS
 &                                      , ng, npz, gridstruct%agrid, -50.&
 &                                      , 100., bad_range)
     END IF
-    IF (fpp%fpp_mapl_mode) dyn_timer = dyn_timer + (t2-t1)
+!    IF (fpp%fpp_mapl_mode) dyn_timer = dyn_timer + (t2-t1)
 !t2 = MPI_Wtime(status)
   END SUBROUTINE FV_DYNAMICS_TLM
 !-----------------------------------------------------------------------
@@ -1107,11 +1098,7 @@ CONTAINS
     REAL, DIMENSION(bd%is:bd%ie) :: cvm
     REAL :: dp1(bd%isd:bd%ied, bd%jsd:bd%jed, npz), dtdt_m(bd%is:bd%ie, &
 &   bd%js:bd%je, npz), cappa(bd%isd:bd%ied, bd%jsd:bd%jed, npz)
-#ifdef OVERLOAD_R4
-    REAL(kind=4) :: psx(bd%isd:bd%ied, bd%jsd:bd%jed)
-#else
     REAL(kind=8) :: psx(bd%isd:bd%ied, bd%jsd:bd%jed)
-#endif
     REAL(kind=8) :: dpx(bd%is:bd%ie, bd%js:bd%je)
     REAL :: akap, rdg, ph1, ph2, mdt, gam, amdt, u0
     INTEGER :: kord_tracer(ncnst), kord_mt, kord_wz, kord_tm
@@ -1185,8 +1172,8 @@ CONTAINS
     ied = bd%ied
     jsd = bd%jsd
     jed = bd%jed
-    dyn_timer = 0
-    comm_timer = 0
+!    dyn_timer = 0
+!    comm_timer = 0
 !     cv_air =  cp_air - rdgas
     agrav = 1./grav
     dt2 = 0.5*bdt
@@ -1753,7 +1740,7 @@ CONTAINS
 &                                      , ng, npz, gridstruct%agrid, -50.&
 &                                      , 100., bad_range)
     END IF
-    IF (fpp%fpp_mapl_mode) dyn_timer = dyn_timer + (t2-t1)
+!    IF (fpp%fpp_mapl_mode) dyn_timer = dyn_timer + (t2-t1)
 !t2 = MPI_Wtime(status)
   END SUBROUTINE FV_DYNAMICS
 !  Differentiation of rayleigh_super in forward (tangent) mode:

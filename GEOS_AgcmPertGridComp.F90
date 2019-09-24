@@ -40,7 +40,7 @@ module GEOS_AgcmPertGridCompMod
   use GEOS_DynCorePertGridCompMod, only: fv_atm
 
   use mpp_mod, only: mpp_pe
-  use fv_timing_mod,  only: timing_on, timing_off, timing_prt
+  use fv_timing_nlm_mod,  only: timing_on, timing_off, timing_prt
 
 #ifdef DO_ADTEST_
   use GEOS_AgcmPertADTester, only: ADTester_test

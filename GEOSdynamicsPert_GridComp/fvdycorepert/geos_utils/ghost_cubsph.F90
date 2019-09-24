@@ -9,7 +9,7 @@ module GHOST_CUBSPH_mod
   ! ghost cell update for cubed sphere, serial version                 !
   !--------------------------------------------------------------------!
 
-  use fv_arrays_mod, only : REAL4, REAL8
+  use fv_arrays_nlm_mod, only : REAL4, REAL8
 
   implicit none
 

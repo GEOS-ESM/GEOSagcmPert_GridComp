@@ -25,10 +25,6 @@ private
 public :: d2c_setup, d2a_setup
 public :: d2c_setup_tlm
 
-!---- version number -----
-  character(len=128) :: version = '$Id$'
-  character(len=128) :: tagname = '$Name$'
-
 CONTAINS
 !  Differentiation of d2c_setup in forward (tangent) mode:
 !   variations   of useful results: uc vc

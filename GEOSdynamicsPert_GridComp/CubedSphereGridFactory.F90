@@ -15,8 +15,8 @@
 
 
 module CubedSphereGridFactoryMod
-   use fv_grid_utils_mod, only: gnomonic_grids, cell_center2
-   use fv_grid_tools_mod, only: mirror_grid
+   use fv_grid_utils_nlm_mod, only: gnomonic_grids, cell_center2
+   use fv_grid_tools_nlm_mod, only: mirror_grid
    use MAPL_AbstractGridFactoryMod
    use MAPL_MinMaxMod
    use MAPL_KeywordEnforcerMod

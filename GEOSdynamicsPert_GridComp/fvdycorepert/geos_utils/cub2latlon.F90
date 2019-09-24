@@ -8,7 +8,7 @@ module CUB2LATLON_mod
   !                                                                    !
   ! routines for interpolation from cubed sphere to latlon             ! 
   !--------------------------------------------------------------------!
-  use fv_arrays_mod, only: REAL4, REAL8
+  use fv_arrays_nlm_mod, only: REAL4, REAL8
 
   implicit none
 

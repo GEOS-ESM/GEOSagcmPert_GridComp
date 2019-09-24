@@ -9,7 +9,7 @@ module CUB2CUB_mod
   ! routines for interpolation between two cubed sphere grids          !
   ! with different spatial resolution                                  !
   !--------------------------------------------------------------------!
-  use fv_arrays_mod, only: REAL4, REAL8, FVPRC
+  use fv_arrays_nlm_mod, only: REAL4, REAL8, FVPRC
   implicit none
 
   private
