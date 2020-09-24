@@ -8,7 +8,7 @@ set (ALLDIRS
 
 esma_add_library (${this}
   SRCS GEOS_ChemPertGridComp.F90
-  DEPENDENCIES MAPL_Base
+  DEPENDENCIES MAPL
   SUBCOMPONENTS ${ALLDIRS}
   )
 

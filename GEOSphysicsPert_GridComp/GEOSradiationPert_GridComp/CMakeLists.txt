@@ -17,5 +17,5 @@ set (SRCS
 
 esma_add_library (${this}
   SRCS ${SRCS}
-  DEPENDENCIES MAPL_Base Chem_Base GEOS_Shared GEOS_PertShared GEOSdynamicsPert_GridComp
+  DEPENDENCIES MAPL Chem_Base GEOS_Shared GEOS_PertShared GEOSdynamicsPert_GridComp
   )
