@@ -17,7 +17,7 @@ module GEOS_PhysicsPertGridCompMod
 ! !USES:
 
   use ESMF
-  use MAPL_Mod
+  use MAPL
 
   use GEOS_SurfacePertGridCompMod,    only : SurfSetServices      => SetServices
   use GEOS_MoistPertGridCompMod,      only : MoistSetServices     => SetServices

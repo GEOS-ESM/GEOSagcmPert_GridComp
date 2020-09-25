@@ -32,7 +32,7 @@ module fv_treat_da_inc_mod
   use constants_mod,     only: pi=>pi_8, omega, grav, kappa, &
                                rdgas, rvgas, cp_air
 #else
-  use MAPL_MOD
+  use MAPL
 #endif
   use fv_arrays_mod,     only: fv_atmos_type, &
                                fv_grid_type, &

@@ -16,7 +16,7 @@ module GEOS_IrradPertGridCompMod
 ! !USES:
 
   use ESMF
-  use MAPL_Mod
+  use MAPL
 !  use GEOS_UtilsMod
   
   implicit none

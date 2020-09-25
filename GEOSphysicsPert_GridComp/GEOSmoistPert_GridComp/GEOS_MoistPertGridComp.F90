@@ -24,7 +24,7 @@ module GEOS_MoistPertGridCompMod
 
 ! GEOS Modules
   use ESMF
-  use MAPL_MOD
+  use MAPL
   use GEOS_Mod
   use GEOS_PertSharedMod
 

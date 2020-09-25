@@ -15,7 +15,7 @@ module GEOS_SurfacePertGridCompMod
 ! !USES:
 
   use ESMF
-  use MAPL_Mod
+  use MAPL
 
 !  use GEOS_LakeGridCompMod,      only : LakeSetServices     => SetServices
 !  use GEOS_LandiceGridCompMod,   only : LandiceSetServices  => SetServices

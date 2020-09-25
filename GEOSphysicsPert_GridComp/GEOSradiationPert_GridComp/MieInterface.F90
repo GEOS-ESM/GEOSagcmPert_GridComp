@@ -5,7 +5,7 @@
 
 module AeroOptPropTableMod
   use ESMF
-  use MAPL_Mod
+  use MAPL
   use Chem_MieMod
 
   implicit none

@@ -38,7 +38,7 @@ module GEOS_RadiationPertGridCompMod
 
 ! ESMF and MAPL components
   use ESMF
-  use MAPL_MOD
+  use MAPL
   use GEOS_Mod
   use GEOS_PertSharedMod
   use AeroOptPropTableMod

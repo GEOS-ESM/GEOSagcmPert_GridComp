@@ -13,7 +13,7 @@ module GEOS_AgcmPertADTester
 ! !USES:
 
 !  use ESMF
-!  use MAPL_Mod
+!  use MAPL
   use GEOS_PertSharedMod, only: T_3Dvar
 
   implicit none
@@ -53,7 +53,7 @@ module GEOS_AgcmPertADTester
 contains
 
   subroutine test_(pertWrk, icall,interval,phase,name)
-    use MAPL_Mod, only: MAPL_ASRT, MAPL_AM_I_ROOT
+    use MAPL,     only: MAPL_ASRT, MAPL_AM_I_ROOT
     use ESMF,     only: ESMF_SUCCESS
     use ESMF,     only: ESMF_VM
     use ESMF,     only: ESMF_VMgetcurrent
@@ -198,7 +198,7 @@ contains
 
   function dot_pert_(pertWrk) result(dot_)
     use GEOS_PertSharedMod, only: T_3DVar
-    use MAPL_Mod, only: MAPL_ASRT
+    use MAPL, only: MAPL_ASRT
     implicit none
     type(T_3DVar), target, dimension(:), intent(in) :: pertWrk
     real(QP):: dot_

@@ -28,7 +28,7 @@ module GEOS_AgcmPertGridCompMod
 ! !USES:
 
   use ESMF
-  use MAPL_Mod
+  use MAPL
   use GEOS_PertSharedMod
 
   use GEOS_DynCorePertGridCompMod,  only:  DYNA_SetServices => SetServices

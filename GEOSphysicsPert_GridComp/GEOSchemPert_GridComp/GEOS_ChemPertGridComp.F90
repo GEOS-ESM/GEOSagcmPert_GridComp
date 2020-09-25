@@ -12,7 +12,7 @@ module GEOS_ChemPertGridCompMod
 ! !USES:
 
   use ESMF
-  use MAPL_Mod
+  use MAPL
 !  use Chem_Mod
 
 !  use GEOS_ChemEnvPertGridCompMod, only : EChemSetServices  => SetServices

@@ -16,7 +16,7 @@
 ! ESMF/MAPL uses
 
    use ESMF                ! ESMF base class
-   use MAPL_Mod            ! GEOS base class
+   use MAPL                ! GEOS base class
 
 ! GEOS_PertShared uses
    use GEOS_PertSharedMod
@@ -2157,7 +2157,7 @@ subroutine Run(gc, import, export, clock, rc)
 
   subroutine register_grid_and_regridders()
     use MAPL_GridManagerMod, only: grid_manager
-    use CubedSphereGridFactoryMod, only: CubedSphereGridFactory
+    !use CubedSphereGridFactoryMod, only: CubedSphereGridFactory
     use MAPL_RegridderManagerMod, only: regridder_manager
     use MAPL_RegridderSpecMod, only: REGRID_METHOD_BILINEAR
     use LatLonToCubeRegridderMod

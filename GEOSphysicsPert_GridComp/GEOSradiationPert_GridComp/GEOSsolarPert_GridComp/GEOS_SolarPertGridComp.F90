@@ -179,7 +179,7 @@ module GEOS_SolarPertGridCompMod
 ! !USES:
 
   use ESMF
-  use MAPL_Mod
+  use MAPL
 !  use AeroOptPropTableMod
 
   implicit none
