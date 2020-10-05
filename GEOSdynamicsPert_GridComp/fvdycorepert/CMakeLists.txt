@@ -81,7 +81,7 @@ set (SRCS
 
 esma_add_library (${this}
   SRCS ${SRCS}
-  DEPENDENCIES MAPL_Base GFDL_fms_r8 Tapenade
+  DEPENDENCIES MAPL_Base fms_r8 Tapenade
   )
 
 target_compile_definitions (${this} PRIVATE MAPL_MODE SPMD TIMING USE_COND MAIST_CAPPA OLDMPP)
