@@ -726,8 +726,7 @@ CONTAINS
       sphumbc => sphum_bc%west_t1
       delpbc => delp_bc%west_t1
       delzbc => delz_bc%west_t1
-!$OMP parallel do default(none) shared(npz,jsd,jed,isd,zvir,sphumBC,liq_watBC_west,rainwatBC_west,ice_watBC_west,snowwatBC_west,g
-!raupelBC_west,qconBC,cappaBC, &
+!$OMP parallel do default(none) shared(npz,jsd,jed,isd,zvir,sphumBC,liq_watBC_west,rainwatBC_west,ice_watBC_west,snowwatBC_west,graupelBC_west,qconBC,cappaBC, &
 !$OMP      rdg,cv_air,delpBC,delzBC,ptBC) &
 !$OMP      private(dp1,q_con,q_liq,q_sol,cvm,pkz)
       DO k=1,npz
@@ -735,7 +734,7 @@ CONTAINS
           DO i=isd,0
             dp1 = zvir*sphumbc(i, j, k)
             pkz = EXP(kappa*LOG(rdg*delpbc(i, j, k)*ptbc(i, j, k)*(1.+&
-&             dp1)/delzbc(i, j, k)))
+             dp1)/delzbc(i, j, k)))
             ptbc(i, j, k) = ptbc(i, j, k)*(1.+dp1)/pkz
           END DO
         END DO
