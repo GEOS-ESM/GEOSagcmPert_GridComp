@@ -73,39 +73,39 @@ contains
     real(R8), allocatable :: grid_global(:,:,:,:)
 
     npts = npx + 1
-    
+
     if (associated(sph_corner)) deallocate(sph_corner)
     allocate( sph_corner(ndims,0:npts+1,0:npts+1,ntiles))
-    
+
     allocate( grid_global(npts,npts,ndims,ntiles))
-    
+
     call gnomonic_grids(A_grid, npx, grid_global(:,:,1,1), grid_global(:,:,2,1))
-    
+
     ! mirror_grid assumes that the tile=1 is centered 
     !   on equator and greenwich meridian Lon[-pi,pi]
     !------------------------------------------------
-    
+
     call mirror_grid(grid_global, 0, npts, npts, ndims, ntiles)
-    
+
     ! Shift the corner away from Japan.
     !  This will result in the corner 
     !  close to the east coast of China.
     !-----------------------------------
-    
+
     grid_global(:,:,1,:) = grid_global(:,:,1,:) - PI/18.
-    
+
     where(grid_global(:,:,1,:) < 0.) &
          grid_global(:,:,1,:) = grid_global(:,:,1,:) + 2.* PI
-    
+
     ! Keep Equator and Greenwich exact
     !---------------------------------
-    
+
     where(abs(grid_global(:,:,:,1)) < 1.e-10) grid_global(:,:,:,1) = 0.0
-    
-    
+
+
     ! Clean Up Corners
     !---------------------------------
-    
+
     grid_global(1   ,   :,:,2)=grid_global(npts     ,:        ,:,1)
     grid_global(1   ,   :,:,3)=grid_global(npts:1:-1,npts     ,:,1)
     grid_global(:   ,npts,:,5)=grid_global(1        ,npts:1:-1,:,1)
