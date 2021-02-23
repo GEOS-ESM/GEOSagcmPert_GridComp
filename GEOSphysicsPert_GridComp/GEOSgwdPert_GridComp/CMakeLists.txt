@@ -9,6 +9,6 @@ set (SRCS
 
 esma_add_library (${this}
   SRCS ${SRCS}
-  DEPENDENCIES MAPL_Base GEOS_Shared GEOS_PertShared fvdycorepert
+  DEPENDENCIES MAPL GEOS_Shared GEOS_PertShared fvdycorepert
   )
 

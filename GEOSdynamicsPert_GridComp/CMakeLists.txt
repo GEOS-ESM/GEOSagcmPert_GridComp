@@ -14,7 +14,7 @@ set (SRCS
 
 esma_add_library (${this}
   SRCS ${SRCS}
-  DEPENDENCIES MAPL_Base GEOS_PertShared
+  DEPENDENCIES MAPL GEOS_PertShared
   SUBCOMPONENTS fvdycorepert
   )
 
