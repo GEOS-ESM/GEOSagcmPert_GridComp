@@ -228,7 +228,9 @@ subroutine Run(gc, import, export, clock, rc)
 ! Begin
 !------
     Iam = "Run"
-    call ESMF_GridCompGet( GC, name=COMP_NAME, currentPhase=Phase, RC=STATUS )
+    call ESMF_GridCompGet( GC, name=COMP_NAME, RC=STATUS )
+    VERIFY_(STATUS)
+    phase=MAPL_GetCorrectedPhase(gc,rc=status)
     VERIFY_(STATUS)
     Iam = trim(COMP_NAME) // trim(Iam)
 
