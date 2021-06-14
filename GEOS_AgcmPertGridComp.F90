@@ -1029,8 +1029,10 @@ subroutine Run(gc, import, export, clock, rc)
 !------
 
     Iam = "Run"
-    call ESMF_GridCompGet( GC, name=COMP_NAME, currentPhase=currPhase, RC=STATUS )
+    call ESMF_GridCompGet( GC, name=COMP_NAME, RC=STATUS )
     VERIFY_(STATUS)
+    currPhase = MAPL_GetCorrectedPhase(gc,rc=status)
+    VERIFY_(status)
     Iam = trim(COMP_NAME) // trim(Iam)
 
 ! Retrieve the pointer to the generic state
@@ -1833,10 +1835,10 @@ subroutine Run(gc, import, export, clock, rc)
        type(RegridderSpec) :: spec
        spec = TR%get_spec()
        if (transpose) then
-          call spec%get_grid_type(OutputGridType=GridTypeIn,rc=status)
+          call spec%get_grid_type(grid_type_out=GridTypeIn,rc=status)
           VERIFY_(status)
        else
-          call spec%get_grid_type(InputGridType=GridTypeIn,rc=status)
+          call spec%get_grid_type(grid_type_in=GridTypeIn,rc=status)
           VERIFY_(status)
        end if
     end block

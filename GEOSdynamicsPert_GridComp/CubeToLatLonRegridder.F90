@@ -8,7 +8,7 @@ module CubeToLatLonRegridderMod
    use MAPL_AbstractRegridderMod
    use CubeLatLonTransformMod
    use MAPL_GridSpecMod
-   use MAPL_RegridderSpecMod
+   use MAPL_RegridderSpec
    use, intrinsic :: iso_fortran_env, only: REAL32
    use, intrinsic :: iso_fortran_env, only: REAL64
    implicit none

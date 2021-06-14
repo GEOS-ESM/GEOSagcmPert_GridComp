@@ -625,7 +625,7 @@ subroutine Run(gc, import, export, clock, rc)
 ! Get the TLM/ADM phase
 ! ---------------------
 
-    call ESMF_GridCompGet(GC, currentPhase=Phase, rc=STATUS)
+    phase=MAPL_GetCorrectedPhase(gc,rc=status)
     VERIFY_(STATUS)
 
     select case(phase)
@@ -2156,10 +2156,8 @@ subroutine Run(gc, import, export, clock, rc)
   end subroutine Finalize
 
   subroutine register_grid_and_regridders()
-    use MAPL_GridManagerMod, only: grid_manager
-    use CubedSphereGridFactoryMod, only: CubedSphereGridFactory
-    use MAPL_RegridderManagerMod, only: regridder_manager
-    use MAPL_RegridderSpecMod, only: REGRID_METHOD_BILINEAR
+    use MAPL
+    !use CubedSphereGridFactoryMod, only: CubedSphereGridFactory
     use LatLonToCubeRegridderMod
     use CubeToLatLonRegridderMod
     use CubeToCubeRegridderMod

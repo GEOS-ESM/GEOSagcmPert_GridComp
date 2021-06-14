@@ -292,7 +292,7 @@ subroutine Run(gc, import, export, clock, rc)
 
     call MAPL_TimerOn(MAPL,"TOTAL")
 
-    call ESMF_GridCompGet(GC, currentPhase=Phase, rc=STATUS)
+    phase = MAPL_GetCorrectedPhase(gc,rc=status)
     VERIFY_(STATUS)
 
     select case(phase)
