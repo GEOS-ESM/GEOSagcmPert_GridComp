@@ -849,6 +849,8 @@ SUBROUTINE CLOUD_DRIVER_B(dt, im, jm, lm, th, thb, q, qb, ple, cnv_dqldt&
 
         !cf_con_p_presink = (1.0-SINKfilt_CF) * cf_conb(i,j,k)
         !cf_conb(i,j,k) = SINKfilt_CF * cf_conb(i,j,k)
+        cf_con_p_presink = 0.0
+        cf_conb(i,j,k) = 0.0
 
         CALL POPREAL8(qi_con(i, j, k))
         tempb12 = qi_con(i, j, k)*qi_conb(i, j, k)
@@ -1247,10 +1249,10 @@ SUBROUTINE CLOUD_DRIVER_B(dt, im, jm, lm, th, thb, q, qb, ple, cnv_dqldt&
            work = 0.0
            info = 0
 
-           CALL DGEEV( 'Vectors', 'Vectors', N1, A, LDA, WR, WI, VL, LDVL, VR, LDVR, WORK, LWORK, INFO )
+           CALL DGEEV( 'N', 'N', N1, A, LDA, WR, WI, VL, LDVL, VR, LDVR, WORK, LWORK, INFO )
 
            LWORK = MIN( LWMAX, INT( WORK( 1 ) ) )
-           CALL DGEEV( 'Vectors', 'Vectors', N1, A, LDA, WR, WI, VL, LDVL, VR, LDVR, WORK, LWORK, INFO )
+           CALL DGEEV( 'N', 'N', N1, A, LDA, WR, WI, VL, LDVL, VR, LDVR, WORK, LWORK, INFO )
 
            maxeval = maxval(abs(WR))
 
@@ -2202,7 +2204,7 @@ SUBROUTINE PDFFRAC_B(flag, qtmean, qtmeanb, sigmaqt1, sigmaqt1b, &
   ELSE IF (flag .EQ. 3) THEN
 
     ! (REGULARIZATION) * (GRADIENT) * (PERTURBATION)
-    clfracb = (0.66*( cosh(10*(RH-1.0))**-2)) * clfracb
+    clfracb = (0.66*( cosh(10*(RH-1.0))**(-2))) * clfracb
 
     rh = qtmean/qstar
     q1 = 22.556
