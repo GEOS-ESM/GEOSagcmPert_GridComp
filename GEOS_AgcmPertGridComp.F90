@@ -459,22 +459,6 @@ contains
     VERIFY_(STATUS)
     call MAPL_TimerAdd(GC, name="RUN"        , RC=STATUS)
     VERIFY_(STATUS)
-    call MAPL_TimerAdd(GC, name="--RUNTLM"   , RC=STATUS)
-    VERIFY_(STATUS)
-    call MAPL_TimerAdd(GC, name="----RunDynaTLM", RC=STATUS)
-    VERIFY_(STATUS)
-#ifndef NO_PHYSCOMP_
-    call MAPL_TimerAdd(GC, name="----RunPhysTLM", RC=STATUS)
-    VERIFY_(STATUS)
-#endif
-    call MAPL_TimerAdd(GC, name="--RUNADJ"   , RC=STATUS)
-    VERIFY_(STATUS)
-    call MAPL_TimerAdd(GC, name="----RunDynaADJ", RC=STATUS)
-    VERIFY_(STATUS)
-#ifndef NO_PHYSCOMP_
-    call MAPL_TimerAdd(GC, name="----RunPhysADJ", RC=STATUS)
-    VERIFY_(STATUS)
-#endif
     call MAPL_TimerAdd(GC, name="FINALIZE"   , RC=STATUS)
     VERIFY_(STATUS)
 

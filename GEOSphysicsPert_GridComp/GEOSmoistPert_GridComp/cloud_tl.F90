@@ -167,7 +167,7 @@ SUBROUTINE CLOUD_DRIVER_D(dt, im, jm, lm, th, thd, q, qd, ple, cnv_dqldt&
   real(8) :: t_p_presink, q_p_presink
   real(8) ::  ql_ls_p_presink, ql_con_p_presink
   real(8) ::  qi_ls_p_presink, qi_con_p_presink
-  real(8) ::  cf_con_p_presink
+  !real(8) ::  cf_con_p_presink
 
 !Highest level of calculations
   ktop = 30
@@ -458,10 +458,10 @@ SUBROUTINE CLOUD_DRIVER_D(dt, im, jm, lm, th, thd, q, qd, ple, cnv_dqldt&
            work = 0.0
            info = 0
 
-           CALL DGEEV( 'Vectors', 'Vectors', N1, A, LDA, WR, WI, VL, LDVL, VR, LDVR, WORK, LWORK, INFO )
+           CALL DGEEV( 'N', 'N', N1, A, LDA, WR, WI, VL, LDVL, VR, LDVR, WORK, LWORK, INFO )
 
            LWORK = MIN( LWMAX, INT( WORK( 1 ) ) )
-           CALL DGEEV( 'Vectors', 'Vectors', N1, A, LDA, WR, WI, VL, LDVL, VR, LDVR, WORK, LWORK, INFO )
+           CALL DGEEV( 'N', 'N', N1, A, LDA, WR, WI, VL, LDVL, VR, LDVR, WORK, LWORK, INFO )
 
            maxeval = maxval(abs(WR))
 
@@ -497,7 +497,7 @@ SUBROUTINE CLOUD_DRIVER_D(dt, im, jm, lm, th, thd, q, qd, ple, cnv_dqldt&
         qi_con_p_presink = qi_cond(i,j,k)
         ql_ls_p_presink = ql_lsd(i,j,k)
         ql_con_p_presink = ql_cond(i,j,k)
-        cf_con_p_presink = cf_cond(i,j,k)
+        !cf_con_p_presink = cf_cond(i,j,k)
 
 !Clean up where too much overall cloud.
         cf_totd = cf_lsd(i, j, k) + cf_cond(i, j, k)
@@ -1559,7 +1559,7 @@ SUBROUTINE PDFFRAC_D(flag, qtmean, qtmeand, sigmaqt1, sigmaqt1d, &
     clfracd = 0.5*q1*rhd0*(1.0-TANH(q1*(rh-1.0))**2)
 
     ! (REGULARIZATION) * (GRADIENT) * (PERTURBATION)
-    clfracd = (0.66*( cosh(10*(RH-1.0))**-2)) * clfracd
+    clfracd = (0.66*( cosh(10*(RH-1.0))**(-2))) * clfracd
 
   ELSE IF (flag .EQ. 4) THEN
 
