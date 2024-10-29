@@ -2885,6 +2885,7 @@ subroutine Run(gc, import, export, clock, rc)
 
     character(len=ESMF_MAXSTR) :: charbuf
     integer :: STATUS, RC
+    logical :: tableEnd
 
     ! initialize
     ntrj = 0
@@ -2893,9 +2894,9 @@ subroutine Run(gc, import, export, clock, rc)
     ! go to the desired label in resource file
     CALL ESMF_ConfigFindLabel(CF, label = 'TRAJ_FILE::', __RC__ )
     do
-      CALL ESMF_ConfigNextLine    (CF,          __RC__)
+      CALL ESMF_ConfigNextLine    (CF, tableEnd=tableEnd,  __RC__)
+      if (tableEnd) exit
       CALL ESMF_ConfigGetAttribute(CF, charbuf, __RC__)
-      if ( trim(charbuf) == '::' ) exit
       ntrj = ntrj + 1
     end do
 
