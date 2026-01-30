@@ -2884,6 +2884,7 @@ subroutine Run(gc, import, export, clock, rc)
     character(len=ESMF_MAXSTR), parameter :: IAm="gq_"
 
     character(len=ESMF_MAXSTR) :: charbuf
+    logical :: tend
     integer :: STATUS, RC
 
     ! initialize
@@ -2892,11 +2893,11 @@ subroutine Run(gc, import, export, clock, rc)
 
     ! go to the desired label in resource file
     CALL ESMF_ConfigFindLabel(CF, label = 'TRAJ_FILE::', __RC__ )
-    do
-      CALL ESMF_ConfigNextLine    (CF,          __RC__)
-      CALL ESMF_ConfigGetAttribute(CF, charbuf, __RC__)
-      if ( trim(charbuf) == '::' ) exit
-      ntrj = ntrj + 1
+    tend = .false.
+    do while (.not. tend)
+      CALL ESMF_ConfigGetAttribute(CF, value=charbuf, default='', __RC__)
+      if ( trim(charbuf) /= '' ) ntrj = ntrj + 1
+      CALL ESMF_ConfigNextLine    (CF, tableEnd=tend, __RC__)
     end do
 
     ! get the wght's for quadrature based on number of points
