@@ -100,7 +100,7 @@ contains
     VERIFY_(STATUS)
     call MAPL_TimerAdd(GC,   name="RUNADJ"       ,RC=STATUS)
     VERIFY_(STATUS)
-    call MAPL_TimerAdd(GC,   name="-MOIST"       ,RC=STATUS)
+    call MAPL_TimerAdd(GC,   name="MOIST"       ,RC=STATUS)
     VERIFY_(STATUS)
 
 ! The same run method is registered twice
@@ -239,12 +239,6 @@ subroutine Run(gc, import, export, clock, rc)
     call MAPL_GetObjectFromGC (GC, MAPL,  RC=STATUS )
     VERIFY_(STATUS)
 
-! Turn on MAPL timers
-! -------------------
-    call MAPL_TimerOn(MAPL,"TOTAL")
-    call MAPL_TimerOn(MAPL,"-MOIST")
-    call MAPL_TimerOn(MAPL,PHASE_NAME)
-
 ! Get time step of the linear model
 ! ---------------------------------
     call MAPL_GetResource(MAPL, DT, Label="RUN_DT:", RC=STATUS)
@@ -260,6 +254,12 @@ subroutine Run(gc, import, export, clock, rc)
     case default
        ASSERT_(.false.)
     end select
+
+! Turn on MAPL timers
+! -------------------
+    call MAPL_TimerOn(MAPL,"TOTAL")
+    call MAPL_TimerOn(MAPL,"MOIST")
+    call MAPL_TimerOn(MAPL,PHASE_NAME)
 
 ! Begin linearised moist physics calculations if asked for in AGCM_apert
 ! ----------------------------------------------------------------------
@@ -1013,7 +1013,7 @@ subroutine Run(gc, import, export, clock, rc)
 ! --------
     call MAPL_TimerOff(MAPL,PHASE_NAME) 
     call MAPL_TimerOff(MAPL,"TOTAL")
-    call MAPL_TimerOff(MAPL,"-MOIST")
+    call MAPL_TimerOff(MAPL,"MOIST")
 
     RETURN_(ESMF_SUCCESS)
 
