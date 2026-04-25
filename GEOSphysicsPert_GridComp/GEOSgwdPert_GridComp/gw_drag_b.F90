@@ -2715,7 +2715,7 @@ END SUBROUTINE GW_MAIN_B
         CALL POPINTEGER4(branch)
         IF (.NOT.branch .LT. 2) THEN
           utlb = ubtb
-          ubtlb = SIGN(1.d0, ubtl*(c(l)-ubi(k)))*utlb
+          ubtlb = SIGN(1.d0, DBLE(ubtl*(c(l)-ubi(k))))*utlb
           CALL POPREAL4(ubtl)
           tempb = mapl_grav*rdpm(i, k)*ubtlb
           taub(l, k) = taub(l, k) + tempb
@@ -3726,7 +3726,7 @@ END SUBROUTINE GW_MAIN_B
         CALL POPINTEGER4(branch)
         IF (.NOT.branch .LT. 2) THEN
           utlb = ubtb
-          ubtlb = SIGN(1.d0, ubtl*(c(l)-ubi(k)))*utlb
+          ubtlb = SIGN(1.d0, DBLE(ubtl*(c(l)-ubi(k))))*utlb
           CALL POPREAL4(ubtl)
           tempb = mapl_grav*rdpm(i, k)*ubtlb
           taub(l, k) = taub(l, k) + tempb

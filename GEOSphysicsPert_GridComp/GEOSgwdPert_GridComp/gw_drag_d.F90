@@ -2132,7 +2132,7 @@ END SUBROUTINE GW_MAIN_D
           ubtld = mapl_grav*rdpm(i, k)*(taud(l, k)-taud(l, k-1))
           ubtl = mapl_grav*(tau(l, k)-tau(l, k-1))*rdpm(i, k)
 ! Calculate the sign of wind tendency
-          utld = ubtld*SIGN(1.d0, ubtl*(c(l)-ubi(k)))
+          utld = ubtld*SIGN(1.d0, DBLE(ubtl*(c(l)-ubi(k))))
           utl = SIGN(ubtl, c(l) - ubi(k))
 ! Accumulate the mean wind tendency over wavenumber.
           ubtd = ubtd + utld
@@ -2971,7 +2971,7 @@ END SUBROUTINE GW_MAIN_D
           ubtld = mapl_grav*rdpm(i, k)*(taud(l, k)-taud(l, k-1))
           ubtl = mapl_grav*(tau(l, k)-tau(l, k-1))*rdpm(i, k)
 ! Calculate the sign of wind tendency
-          utld = ubtld*SIGN(1.d0, ubtl*(c(l)-ubi(k)))
+          utld = ubtld*SIGN(1.d0, DBLE(ubtl*(c(l)-ubi(k))))
           utl = SIGN(ubtl, c(l) - ubi(k))
 ! Accumulate the mean wind tendency over wavenumber.
           ubtd = ubtd + utld
