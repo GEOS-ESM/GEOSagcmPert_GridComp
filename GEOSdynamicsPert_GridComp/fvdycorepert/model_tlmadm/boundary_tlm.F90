@@ -507,13 +507,13 @@ CONTAINS
       position = center
     END IF
     CALL MPP_GET_C2F_INDEX(nest_domain, isw_f, iew_f, jsw_f, jew_f, &
-&                    isw_c, iew_c, jsw_c, jew_c, west, position)
+&                    isw_c, iew_c, jsw_c, jew_c, west, nest_level=0, position=position)
     CALL MPP_GET_C2F_INDEX(nest_domain, ise_f, iee_f, jse_f, jee_f, &
-&                    ise_c, iee_c, jse_c, jee_c, east, position)
+&                    ise_c, iee_c, jse_c, jee_c, east, nest_level=0, position=position)
     CALL MPP_GET_C2F_INDEX(nest_domain, iss_f, ies_f, jss_f, jes_f, &
-&                    iss_c, ies_c, jss_c, jes_c, south, position)
+&                    iss_c, ies_c, jss_c, jes_c, south, nest_level=0, position=position)
     CALL MPP_GET_C2F_INDEX(nest_domain, isn_f, ien_f, jsn_f, jen_f, &
-&                    isn_c, ien_c, jsn_c, jen_c, north, position)
+&                    isn_c, ien_c, jsn_c, jen_c, north, nest_level=0, position=position)
     IF (iew_c .GE. isw_c .AND. jew_c .GE. jsw_c) THEN
       ALLOCATE(wbuffer(isw_c:iew_c, jsw_c:jew_c, npz))
     ELSE
@@ -540,7 +540,7 @@ CONTAINS
     nbuffer = 0.0
     CALL TIMING_ON('COMM_TOTAL')
     CALL MPP_UPDATE_NEST_FINE(var_coarse, nest_domain, wbuffer, sbuffer&
-&                       , ebuffer, nbuffer, position)
+&                       , ebuffer, nbuffer, nest_level=0, position=position)
     CALL TIMING_OFF('COMM_TOTAL')
 !process
     IF (process) THEN
@@ -649,7 +649,7 @@ CONTAINS
     ALLOCATE(nbuffer(1, 1, 1))
     CALL TIMING_ON('COMM_TOTAL')
     CALL MPP_UPDATE_NEST_FINE(var_coarse, nest_domain, wbuffer, sbuffer&
-&                       , ebuffer, nbuffer, position)
+&                       , ebuffer, nbuffer, nest_level=0, position=position)
     CALL TIMING_OFF('COMM_TOTAL')
     DEALLOCATE(wbuffer)
     DEALLOCATE(ebuffer)
@@ -710,13 +710,13 @@ CONTAINS
       position = center
     END IF
     CALL MPP_GET_C2F_INDEX(nest_domain, isw_f, iew_f, jsw_f, jew_f, &
-&                    isw_c, iew_c, jsw_c, jew_c, west, position)
+&                    isw_c, iew_c, jsw_c, jew_c, west, nest_level=0, position=position)
     CALL MPP_GET_C2F_INDEX(nest_domain, ise_f, iee_f, jse_f, jee_f, &
-&                    ise_c, iee_c, jse_c, jee_c, east, position)
+&                    ise_c, iee_c, jse_c, jee_c, east, nest_level=0, position=position)
     CALL MPP_GET_C2F_INDEX(nest_domain, iss_f, ies_f, jss_f, jes_f, &
-&                    iss_c, ies_c, jss_c, jes_c, south, position)
+&                    iss_c, ies_c, jss_c, jes_c, south, nest_level=0, position=position)
     CALL MPP_GET_C2F_INDEX(nest_domain, isn_f, ien_f, jsn_f, jen_f, &
-&                    isn_c, ien_c, jsn_c, jen_c, north, position)
+&                    isn_c, ien_c, jsn_c, jen_c, north, nest_level=0, position=position)
     IF (iew_c .GE. isw_c .AND. jew_c .GE. jsw_c) THEN
       ALLOCATE(wbuffer(isw_c:iew_c, jsw_c:jew_c))
     ELSE
@@ -743,7 +743,7 @@ CONTAINS
     nbuffer = 0.0
     CALL TIMING_ON('COMM_TOTAL')
     CALL MPP_UPDATE_NEST_FINE(var_coarse, nest_domain, wbuffer, sbuffer&
-&                       , ebuffer, nbuffer, position)
+&                       , ebuffer, nbuffer, nest_level=0, position=position)
     CALL TIMING_OFF('COMM_TOTAL')
 !process
     IF (process) THEN
@@ -1045,7 +1045,7 @@ CONTAINS
     END IF
     CALL TIMING_ON('COMM_TOTAL')
     CALL MPP_UPDATE_NEST_FINE(var_coarse, nest_domain, wbuffer, sbuffer&
-&                       , ebuffer, nbuffer, position)
+&                       , ebuffer, nbuffer, nest_level=0, position=position)
     CALL TIMING_OFF('COMM_TOTAL')
   END SUBROUTINE NESTED_GRID_BC_SEND
   SUBROUTINE NESTED_GRID_BC_RECV(nest_domain, istag, jstag, npz, bd, &
@@ -1076,13 +1076,13 @@ CONTAINS
     END IF
     IF (.NOT.ALLOCATED(nest_bc_buffers%west_t1)) THEN
       CALL MPP_GET_C2F_INDEX(nest_domain, isw_f, iew_f, jsw_f, jew_f, &
-&                      isw_c, iew_c, jsw_c, jew_c, west, position)
+&                      isw_c, iew_c, jsw_c, jew_c, west, nest_level=0, position=position)
       CALL MPP_GET_C2F_INDEX(nest_domain, ise_f, iee_f, jse_f, jee_f, &
-&                      ise_c, iee_c, jse_c, jee_c, east, position)
+&                      ise_c, iee_c, jse_c, jee_c, east, nest_level=0, position=position)
       CALL MPP_GET_C2F_INDEX(nest_domain, iss_f, ies_f, jss_f, jes_f, &
-&                      iss_c, ies_c, jss_c, jes_c, south, position)
+&                      iss_c, ies_c, jss_c, jes_c, south, nest_level=0, position=position)
       CALL MPP_GET_C2F_INDEX(nest_domain, isn_f, ien_f, jsn_f, jen_f, &
-&                      isn_c, ien_c, jsn_c, jen_c, north, position)
+&                      isn_c, ien_c, jsn_c, jen_c, north, nest_level=0, position=position)
       IF (iew_c .GE. isw_c .AND. jew_c .GE. jsw_c) THEN
         IF (.NOT.ALLOCATED(nest_bc_buffers%west_t1)) THEN
           ALLOCATE(nest_bc_buffers%west_t1(isw_c:iew_c, jsw_c:jew_c, npz&
@@ -1153,7 +1153,7 @@ CONTAINS
     CALL MPP_UPDATE_NEST_FINE(var_coarse_dummy, nest_domain, &
 &                       nest_bc_buffers%west_t1, nest_bc_buffers%&
 &                       south_t1, nest_bc_buffers%east_t1, &
-&                       nest_bc_buffers%north_t1, position)
+&                       nest_bc_buffers%north_t1, nest_level=0, position=position)
     CALL TIMING_OFF('COMM_TOTAL')
   END SUBROUTINE NESTED_GRID_BC_RECV
   SUBROUTINE NESTED_GRID_BC_SAVE_PROC(nest_domain, ind, wt, istag, jstag&
@@ -1627,7 +1627,7 @@ CONTAINS
       position = center
     END IF
     CALL MPP_GET_F2C_INDEX(nest_domain, is_c, ie_c, js_c, je_c, is_f, &
-&                    ie_f, js_f, je_f, position)
+&                    ie_f, js_f, je_f, nest_level=0, position=position)
     IF (ie_f .GT. is_f .AND. je_f .GT. js_f) THEN
       ALLOCATE(nest_dat(is_f:ie_f, js_f:je_f, npz))
     ELSE
@@ -1637,8 +1637,8 @@ CONTAINS
     IF (child_proc) THEN
 !! IF an area average (for istag == jstag == 0) or a linear average then multiply in the areas before sending data
       IF (istag .EQ. 0 .AND. jstag .EQ. 0) THEN
-        SELECT CASE  (nestupdate) 
-        CASE (1, 2, 6, 7, 8) 
+        SELECT CASE  (nestupdate)
+        CASE (1, 2, 6, 7, 8)
 !$NO-MP parallel do default(none) shared(npz,js_n,je_n,is_n,ie_n,var_nest_send,var_nest,area)
           DO k=1,npz
             DO j=js_n,je_n
@@ -1649,8 +1649,8 @@ CONTAINS
           END DO
         END SELECT
       ELSE IF (istag .EQ. 0 .AND. jstag .GT. 0) THEN
-        SELECT CASE  (nestupdate) 
-        CASE (1, 6, 7, 8) 
+        SELECT CASE  (nestupdate)
+        CASE (1, 6, 7, 8)
 !$NO-MP parallel do default(none) shared(npz,js_n,je_n,is_n,ie_n,var_nest_send,var_nest,dx)
           DO k=1,npz
             DO j=js_n,je_n+1
@@ -1663,8 +1663,8 @@ CONTAINS
           CALL MPP_ERROR(fatal, 'nestupdate type not implemented')
         END SELECT
       ELSE IF (istag .GT. 0 .AND. jstag .EQ. 0) THEN
-        SELECT CASE  (nestupdate) 
-        CASE (1, 6, 7, 8) 
+        SELECT CASE  (nestupdate)
+        CASE (1, 6, 7, 8)
 !averaging update; in-line average for face-averaged values instead of areal average
 !$NO-MP parallel do default(none) shared(npz,js_n,je_n,is_n,ie_n,var_nest_send,var_nest,dy)
           DO k=1,npz
@@ -1684,15 +1684,15 @@ CONTAINS
     END IF
     CALL TIMING_ON('COMM_TOTAL')
     CALL MPP_UPDATE_NEST_COARSE(var_nest_send, nest_domain, nest_dat, &
-&                         position=position)
+&                         nest_level=0, position=position)
     CALL TIMING_OFF('COMM_TOTAL')
 !rounds down (since r > 0)
     s = r/2
     qr = r*upoff + nsponge - s
     IF (parent_proc .AND. (.NOT.(ieu .LT. isu .OR. jeu .LT. jsu))) THEN
       IF (istag .EQ. 0 .AND. jstag .EQ. 0) THEN
-        SELECT CASE  (nestupdate) 
-        CASE (1, 2, 6, 7, 8) 
+        SELECT CASE  (nestupdate)
+        CASE (1, 2, 6, 7, 8)
 ! 1 = Conserving update on all variables; 2 = conserving update for cell-centered values; 6 = conserving remap-update
 !$NO-MP parallel do default(none) shared(npz,jsu,jeu,isu,ieu,ind_update,nest_dat,parent_grid,var_coarse,r) &
 !$NO-MP          private(in,jn,val)
@@ -1703,7 +1703,7 @@ CONTAINS
                 jn = ind_update(i, j, 2)
 !!$            if (in < max(1+qr,is_f) .or. in > min(npx-1-qr-r+1,ie_f) .or. &
 !!$                 jn < max(1+qr,js_f) .or. jn > min(npy-1-qr-r+1,je_f)) then
-!!$               write(mpp_pe()+3000,'(A, 14I6)') 'SKIP: ', i, j, in, jn, 1+qr, is_f, ie_f, js_f, je_f, npy-1-qr-r+1, isu, ieu, 
+!!$               write(mpp_pe()+3000,'(A, 14I6)') 'SKIP: ', i, j, in, jn, 1+qr, is_f, ie_f, js_f, je_f, npy-1-qr-r+1, isu, ieu,
 !jsu, jeu
 !!$               cycle
 !!$            endif
@@ -1725,8 +1725,8 @@ CONTAINS
           CALL MPP_ERROR(fatal, 'nestupdate type not implemented')
         END SELECT
       ELSE IF (istag .EQ. 0 .AND. jstag .GT. 0) THEN
-        SELECT CASE  (nestupdate) 
-        CASE (1, 6, 7, 8) 
+        SELECT CASE  (nestupdate)
+        CASE (1, 6, 7, 8)
 !$NO-MP parallel do default(none) shared(npz,jsu,jeu,isu,ieu,ind_update,nest_dat,parent_grid,var_coarse,r) &
 !$NO-MP          private(in,jn,val)
           DO k=1,npz
@@ -1754,8 +1754,8 @@ CONTAINS
           CALL MPP_ERROR(fatal, 'nestupdate type not implemented')
         END SELECT
       ELSE IF (istag .GT. 0 .AND. jstag .EQ. 0) THEN
-        SELECT CASE  (nestupdate) 
-        CASE (1, 6, 7, 8) 
+        SELECT CASE  (nestupdate)
+        CASE (1, 6, 7, 8)
 !averaging update; in-line average for face-averaged values instead of areal average
 !$NO-MP parallel do default(none) shared(npz,jsu,jeu,isu,ieu,ind_update,nest_dat,parent_grid,var_coarse,r) &
 !$NO-MP          private(in,jn,val)
@@ -1787,5 +1787,5 @@ CONTAINS
     END IF
     DEALLOCATE(nest_dat)
   END SUBROUTINE UPDATE_COARSE_GRID_MPP
-   
+
 end module boundary_tlm_mod
