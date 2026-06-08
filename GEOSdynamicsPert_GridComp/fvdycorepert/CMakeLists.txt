@@ -81,11 +81,11 @@ set (SRCS
 
 esma_add_library (${this}
   SRCS ${SRCS}
-  DEPENDENCIES MAPL fms_r8 Tapenade
+  DEPENDENCIES MAPL FMS::fms_r8 Tapenade
   )
 
 target_compile_definitions (${this} PRIVATE MAPL_MODE SPMD TIMING USE_COND MAIST_CAPPA OLDMPP)
 esma_fortran_generator_list(${this} ${FREAL8})
 
 
-  
+

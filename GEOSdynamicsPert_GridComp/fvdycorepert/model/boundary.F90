@@ -105,7 +105,7 @@ contains
     else
        debug = .false.
     end if
-    
+
     if (is == 1) then
 
        if (pd) then
@@ -133,7 +133,7 @@ contains
           end do
 
        end if
-       
+
     end if
 
     if (js == 1) then
@@ -163,7 +163,7 @@ contains
           end do
 
        end if
-       
+
     end if
 
     if (ie == npx - 1) then
@@ -172,7 +172,7 @@ contains
 
           do j=jstart,jend+jstag
           do i=ie+1+istag,ied+istag
-             
+
              if (real(i) >= ie+istag + q(ie+istag,j)/(q(ie+istag-1,j)-q(ie+istag,j)+1.e-12) .and. &
                   q(ie+istag,j) < q(ie+istag-1,j)) then
                 q(i,j) = q(i-1,j)
@@ -243,7 +243,7 @@ contains
              else
                 q(i,j) = 0.5*( real(2-i)*q(1,j) - real(1-i)*q(2,j) )
              end if
-             
+
              if  (real(j) <= 1. - q(i,1)/(q(i,2) - q(i,1) + 1.e-12) .and. q(i,2) > q(i,1)) then
                 q(i,j) = q(i,j) + 0.5*q(i,j+1)
 
@@ -258,10 +258,10 @@ contains
 
           do j=jsd,0
           do i=isd,0
-                 
+
              q(i,j) = 0.5*( real(2-i)*q(1,j) - real(1-i)*q(2,j) ) + &
                   0.5*( real(2-j)*q(i,1) - real(1-j)*q(i,2) )
-             
+
           end do
           end do
 
@@ -290,7 +290,7 @@ contains
              else
                 q(i,j) = q(i,j) + 0.5*( real(j - (je+jstag-1))*q(i,je+jstag) + real((je+jstag) - j)*q(i,je+jstag-1) )
              end if
-                 
+
           end do
           end do
 
@@ -298,10 +298,10 @@ contains
 
           do j=je+1+jstag,jed+jstag
           do i=isd,0
-                 
+
              q(i,j) = 0.5*( real(2-i)*q(1,j) - real(1-i)*q(2,j) ) + &
                       0.5*( real(j - (je+jstag-1))*q(i,je+jstag) + real((je+jstag) - j)*q(i,je+jstag-1) )
-          
+
           end do
           end do
 
@@ -315,8 +315,8 @@ contains
 
           do j=je+1+jstag,jed+jstag
           do i=ie+1+istag,ied+istag
-                 
-             
+
+
              if (real(i) >= ie+istag + q(ie+istag,j)/(q(ie+istag-1,j)-q(ie+istag,j)+1.e-12) .and. &
                   q(ie+istag-1,j) > q(ie+istag,j)) then
                 q(i,j) = 0.5*q(i-1,j)
@@ -330,7 +330,7 @@ contains
              else
                 q(i,j) = q(i,j) + 0.5*( real(j - (je+jstag-1))*q(i,je+jstag) + real((je+jstag) - j)*q(i,je+jstag-1) )
              end if
-          
+
           end do
           end do
 
@@ -338,10 +338,10 @@ contains
 
           do j=je+1+jstag,jed+jstag
           do i=ie+1+istag,ied+istag
-                 
+
              q(i,j) = 0.5*( real(i - (ie+istag-1))*q(ie+istag,j) + real((ie+istag) - i)*q(ie+istag-1,j) ) + &
                       0.5*( real(j - (je+jstag-1))*q(i,je+jstag) + real((je+jstag) - j)*q(i,je+jstag-1) )
-          
+
           end do
           end do
 
@@ -355,22 +355,22 @@ contains
 
           do j=0,jsd,-1
           do i=ie+1+istag,ied+istag
-                 
-             
+
+
              if (real(i) >= ie+istag + q(ie+istag,j)/(q(ie+istag-1,j)-q(ie+istag,j)+1.e-12) .and. &
                   q(ie+istag-1,j) > q(ie+istag,j)) then
                 q(i,j) = 0.5*q(i-1,j)
              else
                 q(i,j) = 0.5*(real(i - (ie+istag-1))*q(ie+istag,j) + real((ie+istag) - i)*q(ie+istag-1,j))
              end if
-             
+
              if  (real(j) <= 1. - q(i,1)/(q(i,2) - q(i,1) + 1.e-12) .and. &
                   q(i,2) > q(i,1)) then
                 q(i,j) = q(i,j) + 0.5*q(i,j+1)
              else
                 q(i,j) = q(i,j) + 0.5*(real(2-j)*q(i,1) - real(1-j)*q(i,2))
              end if
-          
+
           end do
           end do
 
@@ -379,10 +379,10 @@ contains
 
           do j=jsd,0
           do i=ie+1+istag,ied+istag
-                 
+
              q(i,j) = 0.5*( real(i - (ie+istag-1))*q(ie+istag,j) + real((ie+istag) - i)*q(ie+istag-1,j) ) + &
                       0.5*( real(2-j)*q(i,1) - real(1-j)*q(i,2) )
-          
+
           end do
           end do
 
@@ -398,7 +398,7 @@ contains
 
    type(fv_grid_bounds_type), intent(IN) :: bd
    real, dimension(bd%isd:bd%ied+istag,bd%jsd:bd%jed+jstag), intent(INOUT) :: var_nest
-   real, dimension(isg:ieg+istag,jsg:jeg+jstag), intent(IN) :: var_coarse 
+   real, dimension(isg:ieg+istag,jsg:jeg+jstag), intent(IN) :: var_coarse
    integer, dimension(bd%isd:bd%ied+istag,bd%jsd:bd%jed+jstag,2), intent(IN) :: ind
    real, dimension(bd%isd:bd%ied+istag,bd%jsd:bd%jed+jstag,4), intent(IN) :: wt
    integer, intent(IN) :: istag, jstag, isg, ieg, jsg, jeg
@@ -451,13 +451,13 @@ contains
            wt(i,j,1)*var_coarse(ic,  jc) +  &
            wt(i,j,2)*var_coarse(ic,  jc+1) +  &
            wt(i,j,3)*var_coarse(ic+1,jc+1) +  &
-           wt(i,j,4)*var_coarse(ic+1,jc) 
+           wt(i,j,4)*var_coarse(ic+1,jc)
 
    end do
    end do
 
  end subroutine fill_nested_grid_2D
- 
+
   subroutine fill_nested_grid_3D(var_nest, var_coarse, ind, wt, istag, jstag,  &
       isg, ieg, jsg, jeg, npz, bd, istart_in, iend_in, jstart_in, jend_in)
 
@@ -518,7 +518,7 @@ contains
            wt(i,j,1)*var_coarse(ic,  jc,  k) +  &
            wt(i,j,2)*var_coarse(ic,  jc+1,k) +  &
            wt(i,j,3)*var_coarse(ic+1,jc+1,k) +  &
-           wt(i,j,4)*var_coarse(ic+1,jc,  k) 
+           wt(i,j,4)*var_coarse(ic+1,jc,  k)
 
    end do
    end do
@@ -526,7 +526,7 @@ contains
    end do
 
  end subroutine fill_nested_grid_3D
- 
+
  subroutine nested_grid_BC_mpp(var_nest, var_coarse, nest_domain, ind, wt, istag, jstag, &
       npx, npy, npz, bd, isg, ieg, jsg, jeg, nstep_in, nsplit_in, proc_in)
 
@@ -583,13 +583,13 @@ contains
    end if
 
    call mpp_get_C2F_index(nest_domain, isw_f, iew_f, jsw_f, jew_f, isw_c, iew_c, jsw_c, jew_c, &
-        WEST,  position=position)
+        WEST,  nest_level=0, position=position)
    call mpp_get_C2F_index(nest_domain, ise_f, iee_f, jse_f, jee_f, ise_c, iee_c, jse_c, jee_c, &
-        EAST,  position=position)
+        EAST,  nest_level=0, position=position)
    call mpp_get_C2F_index(nest_domain, iss_f, ies_f, jss_f, jes_f, iss_c, ies_c, jss_c, jes_c, &
-        SOUTH,  position=position)
+        SOUTH,  nest_level=0, position=position)
    call mpp_get_C2F_index(nest_domain, isn_f, ien_f, jsn_f, jen_f, isn_c, ien_c, jsn_c, jen_c, &
-        NORTH,  position=position)
+        NORTH,  nest_level=0, position=position)
 
    if( iew_c .GE. isw_c .AND. jew_c .GE. jsw_c ) then
       allocate(wbuffer(isw_c:iew_c, jsw_c:jew_c,npz))
@@ -621,7 +621,7 @@ contains
 
 
        call timing_on ('COMM_TOTAL')
-   call mpp_update_nest_fine(var_coarse, nest_domain, wbuffer, sbuffer, ebuffer, nbuffer,  position=position)
+   call mpp_update_nest_fine(var_coarse, nest_domain, wbuffer, sbuffer, ebuffer, nbuffer,  nest_level=0, position=position)
        call timing_off('COMM_TOTAL')
 
    if (process) then
@@ -638,7 +638,7 @@ contains
                  wt(i,j,1)*wbuffer(ic,  jc,  k) +  &
                  wt(i,j,2)*wbuffer(ic,  jc+1,k) +  &
                  wt(i,j,3)*wbuffer(ic+1,jc+1,k) +  &
-                 wt(i,j,4)*wbuffer(ic+1,jc,  k) 
+                 wt(i,j,4)*wbuffer(ic+1,jc,  k)
 
          end do
       end do
@@ -670,7 +670,7 @@ contains
                  wt(i,j,1)*sbuffer(ic,  jc,  k) +  &
                  wt(i,j,2)*sbuffer(ic,  jc+1,k) +  &
                  wt(i,j,3)*sbuffer(ic+1,jc+1,k) +  &
-                 wt(i,j,4)*sbuffer(ic+1,jc,  k) 
+                 wt(i,j,4)*sbuffer(ic+1,jc,  k)
 
          end do
       end do
@@ -690,7 +690,7 @@ contains
                  wt(i,j,1)*ebuffer(ic,  jc,  k) +  &
                  wt(i,j,2)*ebuffer(ic,  jc+1,k) +  &
                  wt(i,j,3)*ebuffer(ic+1,jc+1,k) +  &
-                 wt(i,j,4)*ebuffer(ic+1,jc,  k) 
+                 wt(i,j,4)*ebuffer(ic+1,jc,  k)
 
          end do
       end do
@@ -722,7 +722,7 @@ contains
                  wt(i,j,1)*nbuffer(ic,  jc,  k) +  &
                  wt(i,j,2)*nbuffer(ic,  jc+1,k) +  &
                  wt(i,j,3)*nbuffer(ic+1,jc+1,k) +  &
-                 wt(i,j,4)*nbuffer(ic+1,jc,  k) 
+                 wt(i,j,4)*nbuffer(ic+1,jc,  k)
 
          end do
       end do
@@ -772,7 +772,7 @@ contains
 
 
        call timing_on ('COMM_TOTAL')
-   call mpp_update_nest_fine(var_coarse, nest_domain, wbuffer, sbuffer, ebuffer, nbuffer,  position=position)
+   call mpp_update_nest_fine(var_coarse, nest_domain, wbuffer, sbuffer, ebuffer, nbuffer,  nest_level=0, position=position)
        call timing_off('COMM_TOTAL')
 
 
@@ -836,13 +836,13 @@ contains
    end if
 
    call mpp_get_C2F_index(nest_domain, isw_f, iew_f, jsw_f, jew_f, isw_c, iew_c, jsw_c, jew_c, &
-        WEST,  position=position)
+        WEST,  nest_level=0, position=position)
    call mpp_get_C2F_index(nest_domain, ise_f, iee_f, jse_f, jee_f, ise_c, iee_c, jse_c, jee_c, &
-        EAST,  position=position)
+        EAST,  nest_level=0, position=position)
    call mpp_get_C2F_index(nest_domain, iss_f, ies_f, jss_f, jes_f, iss_c, ies_c, jss_c, jes_c, &
-        SOUTH,  position=position)
+        SOUTH,  nest_level=0, position=position)
    call mpp_get_C2F_index(nest_domain, isn_f, ien_f, jsn_f, jen_f, isn_c, ien_c, jsn_c, jen_c, &
-        NORTH,  position=position)
+        NORTH,  nest_level=0, position=position)
 
    if( iew_c .GE. isw_c .AND. jew_c .GE. jsw_c ) then
       allocate(wbuffer(isw_c:iew_c, jsw_c:jew_c))
@@ -873,7 +873,7 @@ contains
    nbuffer = 0
 
        call timing_on ('COMM_TOTAL')
-   call mpp_update_nest_fine(var_coarse, nest_domain, wbuffer, sbuffer, ebuffer, nbuffer,  position=position)
+   call mpp_update_nest_fine(var_coarse, nest_domain, wbuffer, sbuffer, ebuffer, nbuffer,  nest_level=0, position=position)
        call timing_off('COMM_TOTAL')
 
    if (process) then
@@ -889,7 +889,7 @@ contains
                  wt(i,j,1)*wbuffer(ic,  jc) +  &
                  wt(i,j,2)*wbuffer(ic,  jc+1) +  &
                  wt(i,j,3)*wbuffer(ic+1,jc+1) +  &
-                 wt(i,j,4)*wbuffer(ic+1,jc) 
+                 wt(i,j,4)*wbuffer(ic+1,jc)
 
          end do
       end do
@@ -919,7 +919,7 @@ contains
                  wt(i,j,1)*sbuffer(ic,  jc) +  &
                  wt(i,j,2)*sbuffer(ic,  jc+1) +  &
                  wt(i,j,3)*sbuffer(ic+1,jc+1) +  &
-                 wt(i,j,4)*sbuffer(ic+1,jc) 
+                 wt(i,j,4)*sbuffer(ic+1,jc)
 
          end do
       end do
@@ -937,7 +937,7 @@ contains
                  wt(i,j,1)*ebuffer(ic,  jc) +  &
                  wt(i,j,2)*ebuffer(ic,  jc+1) +  &
                  wt(i,j,3)*ebuffer(ic+1,jc+1) +  &
-                 wt(i,j,4)*ebuffer(ic+1,jc) 
+                 wt(i,j,4)*ebuffer(ic+1,jc)
 
          end do
       end do
@@ -967,7 +967,7 @@ contains
                  wt(i,j,1)*nbuffer(ic,  jc) +  &
                  wt(i,j,2)*nbuffer(ic,  jc+1) +  &
                  wt(i,j,3)*nbuffer(ic+1,jc+1) +  &
-                 wt(i,j,4)*nbuffer(ic+1,jc) 
+                 wt(i,j,4)*nbuffer(ic+1,jc)
 
          end do
       end do
@@ -1025,7 +1025,7 @@ contains
                  wt(i,j,1)*var_coarse(ic,  jc) +  &
                  wt(i,j,2)*var_coarse(ic,  jc+1) +  &
                  wt(i,j,3)*var_coarse(ic+1,jc+1) +  &
-                 wt(i,j,4)*var_coarse(ic+1,jc) 
+                 wt(i,j,4)*var_coarse(ic+1,jc)
 
          end do
       end do
@@ -1055,7 +1055,7 @@ contains
                  wt(i,j,1)*var_coarse(ic,  jc) +  &
                  wt(i,j,2)*var_coarse(ic,  jc+1) +  &
                  wt(i,j,3)*var_coarse(ic+1,jc+1) +  &
-                 wt(i,j,4)*var_coarse(ic+1,jc) 
+                 wt(i,j,4)*var_coarse(ic+1,jc)
 
          end do
       end do
@@ -1073,7 +1073,7 @@ contains
                  wt(i,j,1)*var_coarse(ic,  jc) +  &
                  wt(i,j,2)*var_coarse(ic,  jc+1) +  &
                  wt(i,j,3)*var_coarse(ic+1,jc+1) +  &
-                 wt(i,j,4)*var_coarse(ic+1,jc) 
+                 wt(i,j,4)*var_coarse(ic+1,jc)
 
          end do
       end do
@@ -1104,7 +1104,7 @@ contains
                  wt(i,j,1)*var_coarse(ic,  jc) +  &
                  wt(i,j,2)*var_coarse(ic,  jc+1) +  &
                  wt(i,j,3)*var_coarse(ic+1,jc+1) +  &
-                 wt(i,j,4)*var_coarse(ic+1,jc) 
+                 wt(i,j,4)*var_coarse(ic+1,jc)
 
          end do
       end do
@@ -1161,7 +1161,7 @@ contains
                  wt(i,j,1)*var_coarse(ic,  jc,  k) +  &
                  wt(i,j,2)*var_coarse(ic,  jc+1,k) +  &
                  wt(i,j,3)*var_coarse(ic+1,jc+1,k) +  &
-                 wt(i,j,4)*var_coarse(ic+1,jc,  k) 
+                 wt(i,j,4)*var_coarse(ic+1,jc,  k)
 
          end do
       end do
@@ -1193,7 +1193,7 @@ contains
                  wt(i,j,1)*var_coarse(ic,  jc,  k) +  &
                  wt(i,j,2)*var_coarse(ic,  jc+1,k) +  &
                  wt(i,j,3)*var_coarse(ic+1,jc+1,k) +  &
-                 wt(i,j,4)*var_coarse(ic+1,jc,  k) 
+                 wt(i,j,4)*var_coarse(ic+1,jc,  k)
 
          end do
       end do
@@ -1213,7 +1213,7 @@ contains
                  wt(i,j,1)*var_coarse(ic,  jc,  k) +  &
                  wt(i,j,2)*var_coarse(ic,  jc+1,k) +  &
                  wt(i,j,3)*var_coarse(ic+1,jc+1,k) +  &
-                 wt(i,j,4)*var_coarse(ic+1,jc,  k) 
+                 wt(i,j,4)*var_coarse(ic+1,jc,  k)
 
          end do
       end do
@@ -1245,7 +1245,7 @@ contains
                  wt(i,j,1)*var_coarse(ic,  jc,  k) +  &
                  wt(i,j,2)*var_coarse(ic,  jc+1,k) +  &
                  wt(i,j,3)*var_coarse(ic+1,jc+1,k) +  &
-                 wt(i,j,4)*var_coarse(ic+1,jc,  k) 
+                 wt(i,j,4)*var_coarse(ic+1,jc,  k)
 
          end do
       end do
@@ -1281,7 +1281,7 @@ contains
    end if
 
        call timing_on ('COMM_TOTAL')
-   call mpp_update_nest_fine(var_coarse, nest_domain, wbuffer, sbuffer, ebuffer, nbuffer,  position=position)
+   call mpp_update_nest_fine(var_coarse, nest_domain, wbuffer, sbuffer, ebuffer, nbuffer,  nest_level=0, position=position)
        call timing_off('COMM_TOTAL')
 
  end subroutine nested_grid_BC_send
@@ -1294,7 +1294,7 @@ contains
    integer, intent(IN) :: istag, jstag, npz
 
    type(fv_nest_BC_type_3d), intent(INOUT), target :: nest_BC_buffers
-   
+
    real, dimension(bd%isd:bd%ied+istag,bd%jsd:bd%jed+jstag,npz) :: var_coarse_dummy
 
    integer                      :: position
@@ -1319,13 +1319,13 @@ contains
    if (.not. allocated(nest_BC_buffers%west_t1) ) then
 
       call mpp_get_C2F_index(nest_domain, isw_f, iew_f, jsw_f, jew_f, isw_c, iew_c, jsw_c, jew_c, &
-           WEST,  position=position)
+           WEST,  nest_level=0, position=position)
       call mpp_get_C2F_index(nest_domain, ise_f, iee_f, jse_f, jee_f, ise_c, iee_c, jse_c, jee_c, &
-           EAST,  position=position)
+           EAST,  nest_level=0, position=position)
       call mpp_get_C2F_index(nest_domain, iss_f, ies_f, jss_f, jes_f, iss_c, ies_c, jss_c, jes_c, &
-           SOUTH,  position=position)
+           SOUTH,  nest_level=0, position=position)
       call mpp_get_C2F_index(nest_domain, isn_f, ien_f, jsn_f, jen_f, isn_c, ien_c, jsn_c, jen_c, &
-           NORTH,  position=position)
+           NORTH,  nest_level=0, position=position)
 
       if( iew_c .GE. isw_c .AND. jew_c .GE. jsw_c ) then
          If (.not. allocated(nest_BC_buffers%west_t1)) allocate(nest_BC_buffers%west_t1(isw_c:iew_c, jsw_c:jew_c,npz))
@@ -1336,7 +1336,7 @@ contains
             nest_BC_buffers%west_t1(i,j,k) = 0.
          enddo
          enddo
-         enddo         
+         enddo
       else
          allocate(nest_BC_buffers%west_t1(1,1,1))
          nest_BC_buffers%west_t1(1,1,1) = 0.
@@ -1387,7 +1387,7 @@ contains
    endif
 
        call timing_on ('COMM_TOTAL')
-   call mpp_update_nest_fine(var_coarse_dummy, nest_domain, nest_BC_buffers%west_t1, nest_BC_buffers%south_t1, nest_BC_buffers%east_t1, nest_BC_buffers%north_t1,  position=position)
+   call mpp_update_nest_fine(var_coarse_dummy, nest_domain, nest_BC_buffers%west_t1, nest_BC_buffers%south_t1, nest_BC_buffers%east_t1, nest_BC_buffers%north_t1,  nest_level=0, position=position)
        call timing_off('COMM_TOTAL')
 
  end subroutine nested_grid_BC_recv
@@ -1405,7 +1405,7 @@ contains
    !!NOTE: if declaring an ALLOCATABLE array with intent(OUT), the resulting dummy array
    !!      will NOT be allocated! This goes for allocatable members of derived types as well.
    type(fv_nest_BC_type_3d), intent(INOUT), target :: nest_BC, nest_BC_buffers
-   
+
    real, dimension(bd%isd:bd%ied+istag,bd%jsd:bd%jed+jstag,npz) :: var_coarse_dummy
 
    real, dimension(:,:,:), pointer :: var_east, var_west, var_south, var_north
@@ -1463,7 +1463,7 @@ contains
                  wt(i,j,1)*buf_west(ic,  jc,k) +  &
                  wt(i,j,2)*buf_west(ic,  jc+1,k) +  &
                  wt(i,j,3)*buf_west(ic+1,jc+1,k) +  &
-                 wt(i,j,4)*buf_west(ic+1,jc,k) 
+                 wt(i,j,4)*buf_west(ic+1,jc,k)
 
          end do
       end do
@@ -1478,7 +1478,7 @@ contains
             var_west(i,j,k) = max(var_west(i,j,k), 0.5*nest_BC%west_t0(i,j,k))
          end do
          end do
-         end do         
+         end do
       endif
 
    end if
@@ -1510,7 +1510,7 @@ contains
                  wt(i,j,1)*buf_south(ic,  jc,k) +  &
                  wt(i,j,2)*buf_south(ic,  jc+1,k) +  &
                  wt(i,j,3)*buf_south(ic+1,jc+1,k) +  &
-                 wt(i,j,4)*buf_south(ic+1,jc,k) 
+                 wt(i,j,4)*buf_south(ic+1,jc,k)
 
          end do
       end do
@@ -1526,7 +1526,7 @@ contains
 
          end do
          end do
-         end do         
+         end do
       endif
 
    end if
@@ -1547,7 +1547,7 @@ contains
                  wt(i,j,1)*buf_east(ic,  jc,k) +  &
                  wt(i,j,2)*buf_east(ic,  jc+1,k) +  &
                  wt(i,j,3)*buf_east(ic+1,jc+1,k) +  &
-                 wt(i,j,4)*buf_east(ic+1,jc,k) 
+                 wt(i,j,4)*buf_east(ic+1,jc,k)
 
          end do
       end do
@@ -1563,7 +1563,7 @@ contains
 
          end do
          end do
-         end do         
+         end do
       endif
 
    end if
@@ -1595,7 +1595,7 @@ contains
                  wt(i,j,1)*buf_north(ic,  jc,k) +  &
                  wt(i,j,2)*buf_north(ic,  jc+1,k) +  &
                  wt(i,j,3)*buf_north(ic+1,jc+1,k) +  &
-                 wt(i,j,4)*buf_north(ic+1,jc,k) 
+                 wt(i,j,4)*buf_north(ic+1,jc,k)
 
          end do
       end do
@@ -1611,7 +1611,7 @@ contains
 
          end do
          end do
-         end do         
+         end do
       endif
 
    end if
@@ -1619,7 +1619,7 @@ contains
  end subroutine nested_grid_BC_save_proc
 
 
-  ! A NOTE ON BCTYPE: currently only an interpolation BC is implemented, 
+  ! A NOTE ON BCTYPE: currently only an interpolation BC is implemented,
   ! bctype >= 2 currently correspond
   ! to a flux BC on the tracers ONLY, which is implemented in fv_tracer.
 
@@ -1632,7 +1632,7 @@ contains
    integer, intent(IN) :: istag, jstag, npx, npy, npz
    real, intent(IN) :: split, step
    integer, intent(IN) :: bctype
-   
+
    type(fv_nest_BC_type_3D), intent(IN), target :: BC
    real, pointer, dimension(:,:,:) :: var_t0, var_t1
 
@@ -1816,7 +1816,7 @@ contains
       position = CENTER
    end if
 
-   call mpp_get_F2C_index(nest_domain, is_c, ie_c, js_c, je_c, is_f, ie_f, js_f, je_f, position=position)
+   call mpp_get_F2C_index(nest_domain, is_c, ie_c, js_c, je_c, is_f, ie_f, js_f, je_f, nest_level=0, position=position)
    if (ie_f > is_f .and. je_f > js_f) then
       allocate(nest_dat (is_f:ie_f, js_f:je_f,npz))
    else
@@ -1829,7 +1829,7 @@ contains
    if (istag == 0 .and. jstag == 0) then
       select case (nestupdate)
       case (1,2,6,7,8)
-         
+
 !$NO-MP parallel do default(none) shared(npz,js_n,je_n,is_n,ie_n,var_nest_send,var_nest,area)
          do k=1,npz
          do j=js_n,je_n
@@ -1845,7 +1845,7 @@ contains
       end select
    else if (istag == 0 .and. jstag > 0) then
 
-      select case (nestupdate) 
+      select case (nestupdate)
       case (1,6,7,8)
 
 !$NO-MP parallel do default(none) shared(npz,js_n,je_n,is_n,ie_n,var_nest_send,var_nest,dx)
@@ -1855,7 +1855,7 @@ contains
 
 
             var_nest_send(i,j,k) = var_nest(i,j,k)*dx(i,j)
-            
+
          end do
          end do
          end do
@@ -1867,7 +1867,7 @@ contains
       end select
 
    else if (istag > 0 .and. jstag == 0) then
-      select case (nestupdate) 
+      select case (nestupdate)
 
       case (1,6,7,8)   !averaging update; in-line average for face-averaged values instead of areal average
 
@@ -1889,14 +1889,14 @@ contains
       end select
 
    else
-      
+
       call mpp_error(FATAL, "Cannot have both nonzero istag and jstag.")
 
    endif
    endif
 
       call timing_on('COMM_TOTAL')
-   call mpp_update_nest_coarse(var_nest_send, nest_domain, nest_dat, position=position)
+   call mpp_update_nest_coarse(var_nest_send, nest_domain, nest_dat, nest_level=0, position=position)
       call timing_off('COMM_TOTAL')
 
    s = r/2 !rounds down (since r > 0)
@@ -1905,7 +1905,7 @@ contains
    if (parent_proc .and. .not. (ieu < isu .or. jeu < jsu)) then
    if (istag == 0 .and. jstag == 0) then
 
-      select case (nestupdate) 
+      select case (nestupdate)
       case (1,2,6,7,8) ! 1 = Conserving update on all variables; 2 = conserving update for cell-centered values; 6 = conserving remap-update
 
 !$NO-MP parallel do default(none) shared(npz,jsu,jeu,isu,ieu,ind_update,nest_dat,parent_grid,var_coarse,r) &
@@ -1928,7 +1928,7 @@ contains
                do ini=in,in+r-1
                   val = val + nest_dat(ini,jnj,k)
                end do
-            end do            
+            end do
 
             !var_coarse(i,j,k) = val/r**2.
 
@@ -1951,7 +1951,7 @@ contains
    else if (istag == 0 .and. jstag > 0) then
 
 
-      select case (nestupdate) 
+      select case (nestupdate)
       case (1,6,7,8)
 
 !$NO-MP parallel do default(none) shared(npz,jsu,jeu,isu,ieu,ind_update,nest_dat,parent_grid,var_coarse,r) &
@@ -1989,7 +1989,7 @@ contains
 
    else if (istag > 0 .and. jstag == 0) then
 
-      select case (nestupdate) 
+      select case (nestupdate)
       case (1,6,7,8)   !averaging update; in-line average for face-averaged values instead of areal average
 
 !$NO-MP parallel do default(none) shared(npz,jsu,jeu,isu,ieu,ind_update,nest_dat,parent_grid,var_coarse,r) &
@@ -2030,9 +2030,9 @@ contains
 
    endif
    deallocate(nest_dat)
-   
+
  end subroutine update_coarse_grid_mpp
 
 
-   
+
 end module boundary_mod
